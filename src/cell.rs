@@ -11,7 +11,7 @@ impl Default for Status {
     }
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct Cell {
     status: Status,
     position: (i32, i32)
@@ -26,8 +26,8 @@ impl Cell {
         }
     }
     //  geter
-    pub fn get_status(&mut self) -> Status {
-        self.status
+    pub fn is_alive(&mut self) -> bool {
+        self.status == Status::Live
     }
     pub fn get_x(&mut self) -> i32 {
         self.position.0
@@ -42,8 +42,8 @@ impl Cell {
     pub fn set_y(&mut self, y: i32) {
         self.position.1 = y;
     }
-    pub fn change_status(&mut self) {
-        if self.status == Status::Dead {
+    pub fn change_status(&mut self, next: bool) {
+        if next {
             self.status = Status::Live;
         }
         else {
