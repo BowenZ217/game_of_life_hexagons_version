@@ -22,7 +22,8 @@ rules:
 Show the results as an animation.
 
 ## Possible Challenges
-How to display it as an image
+* How to display the hexagon cells as an GIF or animation
+* Having a simple UI (e.g. User can choose which cells are live to begin with, user can move onto next generation, user can terminate program)
 
 ## References
 
