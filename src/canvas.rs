@@ -1,6 +1,6 @@
 // pub const NUM_SIDE_TOTAL : usize = 6;
 
-mod cell;
+// mod cell;
 use crate::cell::Cell;
 
 #[derive(Debug, Default)]
@@ -14,10 +14,11 @@ pub struct Canvas {
 }
 
 impl Canvas {
-    pub fn new(cells_vertical: usize, cells_horizontal: usize, side_length: f64) -> Canvas {
-        cells_vertical *= 2;
-        let display_vector: Vec<Vec<Cell>> = vec![vec![Cell::new(); cells_horizontal]; cells_vertical];
-        set_position(display_vector);
+    pub fn new(cells_vertical_set: usize, cells_horizontal: usize, side_length: f64) -> Canvas {
+        // or it will be different shape for even and odd rows
+        let cells_vertical = cells_vertical_set * 2;
+        // create 2d vector for cells, also set up the position
+        let display_vector: Vec<Vec<Cell>> = Canvas::get_set_position(cells_vertical, cells_horizontal, side_length);
         // let display_vector: Vec<Vec<Cell>> = Vec::new();
         return Canvas {
             height: side_length*((3 as f64).sqrt()) * (cells_vertical as f64),
@@ -29,7 +30,9 @@ impl Canvas {
         };
     }
 
-    fn set_position(canvas: Vec<Vec<Cell>>, cell_side_length: f64) {
+    fn get_set_position(cells_vertical: usize, cells_horizontal: usize, cell_side_length: f64) -> Vec<Vec<Cell>> {
+        // todo!();
+
         // Calculate the position for each cell
         //                 _____       _____       _____       _____
         //           _____/ 0,0 \_____/ 0,1 \_____/ 0,2 \_____/ 0,3 \
@@ -41,11 +44,21 @@ impl Canvas {
         //          \_____/ 6,0 \_____/ 6,1 \_____/ 6,2 \_____/ 6,3 \
         //          / 7,0 \_____/ 7,1 \_____/ 7,2 \_____/ 7,3 \_____/
         //          \_____/     \_____/     \_____/     \_____/
-        
-        todo!();
+        let mut display_vector: Vec<Vec<Cell>> = vec![vec![Cell::new(); cells_horizontal]; cells_vertical];
+        for row in 0..cells_vertical {
+            for col in 0..cells_horizontal {
+                // unfinished   !!!
+                let x = 0;
+                let y = 0;
+                display_vector[row][col].set_x(x);
+                display_vector[row][col].set_y(y);
+            }
+        }
+        return display_vector;
     }
 
     // means cells_vertical % 2 == 0
+    // get number of alive neighbors of that cell
     fn alive_nei_num_even(&mut self, row: usize, col: usize) -> i32 {
         let mut count = 0;
         if row % 2 == 0 {
@@ -103,10 +116,10 @@ impl Canvas {
 
     // rules
     fn check(&mut self, row: usize, col: usize) -> bool {
-        todo!();
+        // todo!();
         //  true    means   alive
         //  false   means   dead
-        let neighbor_num = alive_nei_num_even(row, col);
+        let neighbor_num = Canvas::alive_nei_num_even(self, row, col);
         if self.display[row][col].is_alive() {
             // 
             if neighbor_num == 3 {
@@ -125,20 +138,48 @@ impl Canvas {
         return false;
     }
     pub fn next_generation(&mut self) {
-        todo!();
+        // todo!();
         let mut next = self.display.clone();
         for row in 0..self.cells_vertical {
             for col in 0..self.cells_horizontal {
-                let next_state = check(row, col);
+                let next_state = Canvas::check(self, row, col);
                 next[row][col].change_status(next_state);
             }
         }
         self.display = next;
     }
 
+    //  let user change the cell's status in canvas
+    pub fn reverse_status(&mut self, row: usize, col: usize) {
+        self.display[row][col].reverse_status();
+    }
+
     pub fn display_canvas() {
         todo!()
         // Ask at office hours
+    }
+
+    // a easy way to display it out in terminal
+    pub fn display_in_terminal(&mut self) {
+        let space_3 = "   ";
+        let space_5 = "     ";
+        for row in 0..self.cells_vertical {
+            if row % 2 == 0 {
+                //  space_3 + display[row][col] + space_5 + ...(display[row][col] + space_5)
+                print!("{}", space_3);
+                for col in 0..self.cells_horizontal {
+                    print!("{}{}", self.display[row][col].get_status_in_string(), space_5);
+                }
+                print!("\n");
+            }
+            else {
+                //  display[row][col] + space_5 + ...(display[row][col] + space_5)
+                for col in 0..self.cells_horizontal {
+                    print!("{}{}", self.display[row][col].get_status_in_string(), space_5);
+                }
+                print!("\n");
+            }
+        }
     }
 
 }

@@ -35,7 +35,7 @@ impl Cell {
     pub fn get_y(&mut self) -> i32 {
         self.position.1
     }
-    //  
+    //  setter
     pub fn set_x(&mut self, x: i32) {
         self.position.0 = x;
     }
@@ -48,6 +48,23 @@ impl Cell {
         }
         else {
             self.status = Status::Dead;
+        }
+    }
+    pub fn reverse_status(&mut self) {
+        if self.status == Status::Dead {
+            self.status = Status::Live;
+        }
+        else {
+            self.status = Status::Dead;
+        }
+    }
+    // helper for easy display
+    pub fn get_status_in_string(&mut self) -> &str {
+        if self.status == Status::Live {
+            return "O";
+        }
+        else {
+            return "X";
         }
     }
 }
