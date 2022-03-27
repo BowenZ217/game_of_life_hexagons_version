@@ -5,6 +5,7 @@ mod cell;
 mod canvas;
 use crate::canvas::CanvasHex;
 use crate::canvas::CanvasSquare;
+use crate::canvas::CanvasTriangle;
 
 extern crate rand;
 
@@ -15,10 +16,10 @@ use std::{thread, time};
 fn main() {
     let mut status: String;
     loop {
-        println!("Which status?(hex / square)");
+        println!("Which status?(hexagon / square / triangle)");
         status = lib::read_one().trim().to_uppercase();
 
-        if status == "HEX".to_string() || status == "SQUARE".to_string() {
+        if status == "HEXAGON".to_string() || status == "SQUARE".to_string() || status == "TRIANGLE".to_string() {
             break
         }
 
@@ -69,11 +70,14 @@ fn main() {
     
     println!("{}", separation);
 
-    if status == "HEX".to_string() {
+    if status == "HEXAGON".to_string() {
         canvas_hexagons_display(row_num, col_num, loop_num);
     }
     if status == "SQUARE".to_string() {
         canvas_square_display(row_num, col_num, loop_num);
+    }
+    if status == "TRIANGLE".to_string() {
+        canvas_triangle_display(row_num, col_num, loop_num)
     }
     
 }
@@ -154,4 +158,25 @@ fn canvas_square_display(row_num: usize, col_num: usize, loop_num: usize) {
         thread::sleep(sleep_time);
     }
     canvas_squares.do_nothing();
+}
+
+fn canvas_triangle_display(row_num: usize, col_num: usize, loop_num: usize) {
+    let separation = "------------------------------------------------------------------------------------";
+    let sleep_time = time::Duration::from_millis(1500);
+    let mut canvas_triangles = CanvasTriangle::new(row_num, col_num, 5);
+    for _num in 0..150 {
+        let x: usize = rand::random::<usize>() % col_num;
+        let y: usize = rand::random::<usize>() % row_num;
+        canvas_triangles.reverse_status(y.into(), x.into());
+    }
+    canvas_triangles.display_in_terminal();
+    println!("{}", separation);
+    thread::sleep(sleep_time);
+    for _num in 0..loop_num {
+        canvas_triangles.next_generation();
+        canvas_triangles.display_in_terminal();
+        println!("{}", separation);
+        thread::sleep(sleep_time);
+    }
+    canvas_triangles.do_nothing();
 }
