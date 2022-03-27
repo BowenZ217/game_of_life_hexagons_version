@@ -7,6 +7,8 @@ use crate::canvas::Canvas;
 
 extern crate rand;
 
+use std::{thread, time};
+
 fn main() {
     lib::printhello();
     //  test for Cell
@@ -22,7 +24,7 @@ fn main() {
     // canvas_1.display_in_terminal();
     // println!("{}", separation);
     // --------------------------------------------------------------
-    for _num in 0..20 {
+    for _num in 0..100 {
         let x: u8 = rand::random::<u8>() % 15;
         let y: u8 = rand::random::<u8>() % 15;
         canvas_1.reverse_status(x.into(), y.into());
@@ -37,5 +39,12 @@ fn main() {
     canvas_1.next_generation();
     canvas_1.display_in_terminal();
     println!("{}", separation);
+    let sleep_time = time::Duration::from_millis(1500);
+    for _num in 0..20 {
+        canvas_1.next_generation();
+        canvas_1.display_in_terminal();
+        println!("{}", separation);
+        thread::sleep(sleep_time);
+    }
     // --------------------------------------------------------------
 }
