@@ -18,13 +18,13 @@ fn main() {
     println!("status: {:?}, x: {}, y: {}", cell_a.is_alive(), cell_a.get_x(), cell_a.get_y());
     //  test for canvas
     let separation = "------------------------------------------------------------------------------";
-    let mut canvas_1 = Canvas::new(15, 20, 5.0);
+    let mut canvas_1 = Canvas::new(15, 15, 5.0);
     // canvas_1.display_in_terminal();
     // println!("{}", separation);
     // --------------------------------------------------------------
     for _num in 0..20 {
         let x: u8 = rand::random::<u8>() % 15;
-        let y: u8 = rand::random::<u8>() % 20;
+        let y: u8 = rand::random::<u8>() % 15;
         canvas_1.reverse_status(x.into(), y.into());
     }
     // canvas_1.reverse_status(5, 7);

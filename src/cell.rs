@@ -61,10 +61,10 @@ impl Cell {
     // helper for easy display
     pub fn get_status_in_string(&mut self) -> &str {
         if self.status == Status::Live {
-            return "O";
+            return "▆▆";
         }
         else {
-            return "X";
+            return "口";
         }
     }
 }

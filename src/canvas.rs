@@ -161,21 +161,21 @@ impl Canvas {
 
     // a easy way to display it out in terminal
     pub fn display_in_terminal(&mut self) {
-        let space_3 = "   ";
-        let space_5 = "     ";
+        let space_4 = "    ";
+        let space_6 = "      ";
         for row in 0..self.cells_vertical {
             if row % 2 == 0 {
                 //  space_3 + display[row][col] + space_5 + ...(display[row][col] + space_5)
-                print!("{}", space_3);
+                print!("{}", space_4);
                 for col in 0..self.cells_horizontal {
-                    print!("{}{}", self.display[row][col].get_status_in_string(), space_5);
+                    print!("{}{}", self.display[row][col].get_status_in_string(), space_6);
                 }
                 print!("\n");
             }
             else {
                 //  display[row][col] + space_5 + ...(display[row][col] + space_5)
                 for col in 0..self.cells_horizontal {
-                    print!("{}{}", self.display[row][col].get_status_in_string(), space_5);
+                    print!("{}{}", self.display[row][col].get_status_in_string(), space_6);
                 }
                 print!("\n");
             }
