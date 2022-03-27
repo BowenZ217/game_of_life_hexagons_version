@@ -14,7 +14,7 @@ impl Default for Status {
 #[derive(Debug, Default, Clone)]
 pub struct Cell {
     status: Status,
-    position: (i32, i32)
+    position: (f64, f64)
 }
 
 impl Cell {
@@ -22,24 +22,24 @@ impl Cell {
     pub fn new() -> Cell {
         Cell {
             status: Status::Dead,
-            position: (0, 0)
+            position: (0.0, 0.0)
         }
     }
     //  geter
     pub fn is_alive(&mut self) -> bool {
         self.status == Status::Live
     }
-    pub fn get_x(&mut self) -> i32 {
+    pub fn get_x(&mut self) -> f64 {
         self.position.0
     }
-    pub fn get_y(&mut self) -> i32 {
+    pub fn get_y(&mut self) -> f64 {
         self.position.1
     }
     //  setter
-    pub fn set_x(&mut self, x: i32) {
+    pub fn set_x(&mut self, x: f64) {
         self.position.0 = x;
     }
-    pub fn set_y(&mut self, y: i32) {
+    pub fn set_y(&mut self, y: f64) {
         self.position.1 = y;
     }
     pub fn change_status(&mut self, next: bool) {

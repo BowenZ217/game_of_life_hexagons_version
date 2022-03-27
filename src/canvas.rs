@@ -48,8 +48,8 @@ impl Canvas {
         for row in 0..cells_vertical {
             for col in 0..cells_horizontal {
                 // unfinished   !!!
-                let x = 0;
-                let y = 0;
+                let x = 0.0 * cell_side_length;
+                let y = 0.0 * cell_side_length;
                 display_vector[row][col].set_x(x);
                 display_vector[row][col].set_y(y);
             }
@@ -154,10 +154,10 @@ impl Canvas {
         self.display[row][col].reverse_status();
     }
 
-    pub fn display_canvas() {
-        todo!()
-        // Ask at office hours
-    }
+    // pub fn display_canvas(&mut self) {
+    //     todo!()
+    //     // Ask at office hours
+    // }
 
     // a easy way to display it out in terminal
     pub fn display_in_terminal(&mut self) {
@@ -182,4 +182,11 @@ impl Canvas {
         }
     }
 
+    pub fn do_nothing(&mut self) {
+        self.display[0][0].get_x();
+        self.display[0][0].get_y();
+        self.height;
+        self.width;
+        self.cell_side_length;
+    }
 }
