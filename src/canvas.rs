@@ -4,7 +4,7 @@
 use crate::cell::Cell;
 
 #[derive(Debug, Default)]
-pub struct Canvas {
+pub struct CanvasHex {
     height: f64,
     width: f64,
     cells_vertical: usize,
@@ -13,14 +13,14 @@ pub struct Canvas {
     display: Vec<Vec<Cell>>
 }
 
-impl Canvas {
-    pub fn new(cells_vertical_set: usize, cells_horizontal: usize, side_length: f64) -> Canvas {
+impl CanvasHex {
+    pub fn new(cells_vertical_set: usize, cells_horizontal: usize, side_length: f64) -> CanvasHex {
         // or it will be different shape for even and odd rows
         let cells_vertical = cells_vertical_set * 2;
         // create 2d vector for cells, also set up the position
-        let display_vector: Vec<Vec<Cell>> = Canvas::get_set_position(cells_vertical, cells_horizontal, side_length);
+        let display_vector: Vec<Vec<Cell>> = CanvasHex::get_set_position(cells_vertical, cells_horizontal, side_length);
         // let display_vector: Vec<Vec<Cell>> = Vec::new();
-        return Canvas {
+        return CanvasHex {
             height: side_length*((3 as f64).sqrt()) * (cells_vertical as f64),
             width: side_length * (cells_horizontal as f64),
             cells_vertical: cells_vertical,
@@ -119,7 +119,7 @@ impl Canvas {
         // todo!();
         //  true    means   alive
         //  false   means   dead
-        let neighbor_num = Canvas::alive_nei_num_even(self, row, col);
+        let neighbor_num = CanvasHex::alive_nei_num_even(self, row, col);
         if self.display[row][col].is_alive() {
             // 
             if neighbor_num == 3 {
@@ -142,7 +142,7 @@ impl Canvas {
         let mut next = self.display.clone();
         for row in 0..self.cells_vertical {
             for col in 0..self.cells_horizontal {
-                let next_state = Canvas::check(self, row, col);
+                let next_state = CanvasHex::check(self, row, col);
                 next[row][col].change_status(next_state);
             }
         }
@@ -188,5 +188,113 @@ impl Canvas {
         self.height;
         self.width;
         self.cell_side_length;
+    }
+}
+
+
+#[derive(Debug, Default)]
+pub struct CanvasSquare {
+    row_num: usize,
+    col_num: usize,
+    cell_side_length: i32,
+    display: Vec<Vec<Cell>>
+}
+
+impl CanvasSquare {
+    pub fn new(row_num_set: usize, col_num_set: usize, side_length: i32) -> CanvasSquare {
+        // create 2d vector for cells
+        let display_vector: Vec<Vec<Cell>> = vec![vec![Cell::new(); col_num_set]; row_num_set];
+        return CanvasSquare {
+            row_num: row_num_set,
+            col_num: col_num_set,
+            cell_side_length: side_length,
+            display: display_vector
+        };
+    }
+    pub fn next_generation(&mut self) {
+        // todo!();
+        let mut next = self.display.clone();
+        for row in 0..self.row_num {
+            for col in 0..self.col_num {
+                let next_state = CanvasSquare::check(self, row, col);
+                next[row][col].change_status(next_state);
+            }
+        }
+        self.display = next;
+    }
+
+    //  let user change the cell's status in canvas
+    pub fn reverse_status(&mut self, row: usize, col: usize) {
+        self.display[row][col].reverse_status();
+    }
+    // a easy way to display it out in terminal
+    pub fn display_in_terminal(&mut self) {
+        let space_2 = "  ";
+        for row in 0..self.row_num {
+            for col in 0..self.col_num {
+                print!("{}{}", self.display[row][col].get_status_in_string(), space_2);
+            }
+            print!("\n\n");
+        }
+    }
+
+    pub fn do_nothing(&mut self) {
+        self.cell_side_length;
+    }
+    // helper
+    fn alive_nei_num(&mut self, row: usize, col: usize) -> i32 {
+        let mut count = 0;
+        if row > 0 {
+            if self.display[row - 1][col].is_alive() {
+                count += 1;
+            }
+            if col > 0 && self.display[row - 1][col - 1].is_alive() {
+                count += 1;
+            }
+            if col < self.col_num - 1 && self.display[row - 1][col + 1].is_alive() {
+                count += 1;
+            }
+        }
+        if col > 0 && self.display[row][col - 1].is_alive() {
+            count += 1;
+        }
+        if col < self.col_num - 1 && self.display[row][col + 1].is_alive() {
+            count += 1;
+        }
+        if row < self.row_num - 1 {
+            if self.display[row + 1][col].is_alive() {
+                count += 1;
+            }
+            if col > 0 && self.display[row + 1][col - 1].is_alive() {
+                count += 1;
+            }
+            if col < self.col_num - 1 && self.display[row + 1][col + 1].is_alive() {
+                count += 1;
+            }
+        }
+        count
+    }
+    // rules
+    fn check(&mut self, row: usize, col: usize) -> bool {
+        // todo!();
+        //  true    means   alive
+        //  false   means   dead
+        let neighbor_num = CanvasSquare::alive_nei_num(self, row, col);
+        if self.display[row][col].is_alive() {
+            // 
+            if neighbor_num == 2 {
+                return true;
+            }
+            if neighbor_num == 3 {
+                return true;
+            }
+        }
+        else {
+            //  reproduction
+            if neighbor_num == 3 {
+                return true;
+            }
+        }
+        return false;
     }
 }

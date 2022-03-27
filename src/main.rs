@@ -3,51 +3,79 @@ mod lib;
 mod cell;
 // use crate::cell::Cell;
 mod canvas;
-use crate::canvas::Canvas;
+use crate::canvas::CanvasHex;
+use crate::canvas::CanvasSquare;
 
 extern crate rand;
 
-use std::io::stdin;
+// use std::io::stdin;
 use std::{thread, time};
 
 
 fn main() {
-    let separation = "------------------------------------------------------------------------------------";
-    let sleep_time = time::Duration::from_millis(1500);
+    let mut status: String;
+    loop {
+        println!("Which status?(hex / square)");
+        status = lib::read_one().trim().to_uppercase();
 
-    println!("number of rows: ");
-    let mut row_num = String::new();
-    stdin().read_line(&mut row_num).expect("Failed to get console input");
+        if status == "HEX".to_string() || status == "SQUARE".to_string() {
+            break
+        }
+
+        println!("Invalid status.  Please try again.")
+    }
+
+    
+    let mut row_num: String;
+    loop {
+        println!("number of rows: ");
+        row_num = lib::read_one().trim().to_string();
+
+        if lib::is_number(row_num.clone()) {
+            break
+        }
+
+        println!("Invalid status.  Please try again.")
+    }
     let row_num = row_num.trim().parse::<usize>().expect("Failed to parse int");
 
-    println!("number of cols: ");
-    let mut col_num = String::new();
-    stdin().read_line(&mut col_num).expect("Failed to get console input");
+    let mut col_num: String;
+    loop {
+        println!("number of cols: ");
+        col_num = lib::read_one().trim().to_string();
+
+        if lib::is_number(col_num.clone()) {
+            break
+        }
+
+        println!("Invalid status.  Please try again.")
+    }
     let col_num = col_num.trim().parse::<usize>().expect("Failed to parse int");
 
-    println!("number of loops: ");
-    let mut loop_num = String::new();
-    stdin().read_line(&mut loop_num).expect("Failed to get console input");
+    let mut loop_num: String;
+    loop {
+        println!("number of loops: ");
+        loop_num = lib::read_one().trim().to_string();
+
+        if lib::is_number(loop_num.clone()) {
+            break
+        }
+
+        println!("Invalid status.  Please try again.")
+    }
     let loop_num = loop_num.trim().parse::<usize>().expect("Failed to parse int");
     //----------------------------------------------------------------------------------------------
+    let separation = "------------------------------------------------------------------------------------";
+    
     println!("{}", separation);
 
-    let mut canvas_hexagons = Canvas::new(row_num, col_num, 5.0);
-    for _num in 0..150 {
-        let x: usize = rand::random::<usize>() % col_num;
-        let y: usize = rand::random::<usize>() % (row_num * 2);
-        canvas_hexagons.reverse_status(y.into(), x.into());
+    if status == "HEX".to_string() {
+        canvas_hexagons_display(row_num, col_num, loop_num);
     }
-    canvas_hexagons.display_in_terminal();
-    println!("{}", separation);
-    thread::sleep(sleep_time);
-    for _num in 0..loop_num {
-        canvas_hexagons.next_generation();
-        canvas_hexagons.display_in_terminal();
-        println!("{}", separation);
-        thread::sleep(sleep_time);
+    if status == "SQUARE".to_string() {
+        canvas_square_display(row_num, col_num, loop_num);
     }
-    canvas_hexagons.do_nothing();
+    
 }
 // fn main() {
 //     let separation = "------------------------------------------------------------------------------------";
@@ -85,3 +113,45 @@ fn main() {
 //     }
 //     // --------------------------------------------------------------
 // }
+
+fn canvas_hexagons_display(row_num: usize, col_num: usize, loop_num: usize) {
+    let separation = "------------------------------------------------------------------------------------";
+    let sleep_time = time::Duration::from_millis(1500);
+    let mut canvas_hexagons = CanvasHex::new(row_num, col_num, 5.0);
+    for _num in 0..150 {
+        let x: usize = rand::random::<usize>() % col_num;
+        let y: usize = rand::random::<usize>() % (row_num * 2);
+        canvas_hexagons.reverse_status(y.into(), x.into());
+    }
+    canvas_hexagons.display_in_terminal();
+    println!("{}", separation);
+    thread::sleep(sleep_time);
+    for _num in 0..loop_num {
+        canvas_hexagons.next_generation();
+        canvas_hexagons.display_in_terminal();
+        println!("{}", separation);
+        thread::sleep(sleep_time);
+    }
+    canvas_hexagons.do_nothing();
+}
+
+fn canvas_square_display(row_num: usize, col_num: usize, loop_num: usize) {
+    let separation = "------------------------------------------------------------------------------------";
+    let sleep_time = time::Duration::from_millis(1500);
+    let mut canvas_squares = CanvasSquare::new(row_num, col_num, 5);
+    for _num in 0..150 {
+        let x: usize = rand::random::<usize>() % col_num;
+        let y: usize = rand::random::<usize>() % row_num;
+        canvas_squares.reverse_status(y.into(), x.into());
+    }
+    canvas_squares.display_in_terminal();
+    println!("{}", separation);
+    thread::sleep(sleep_time);
+    for _num in 0..loop_num {
+        canvas_squares.next_generation();
+        canvas_squares.display_in_terminal();
+        println!("{}", separation);
+        thread::sleep(sleep_time);
+    }
+    canvas_squares.do_nothing();
+}
