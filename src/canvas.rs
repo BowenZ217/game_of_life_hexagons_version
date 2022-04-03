@@ -48,8 +48,11 @@ impl CanvasHex {
         for row in 0..cells_vertical {
             for col in 0..cells_horizontal {
                 // unfinished   !!!
-                let x = 0.0 * cell_side_length;
-                let y = 0.0 * cell_side_length;
+
+                let x = cell_side_length + 3*col*cell_side_length;
+
+                // sqrt(3)/2 approx = 0.8660254
+                let y =  0.8660254 * cell_side_length + 2*row*side_length;
                 display_vector[row][col].set_x(x);
                 display_vector[row][col].set_y(y);
             }
