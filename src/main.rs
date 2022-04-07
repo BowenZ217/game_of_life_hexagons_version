@@ -210,9 +210,13 @@ fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: i32)
         canvas_squares.reverse_status(y.into(), x.into());
     }
     let mut auto = false;
+    let mut cursor = [0.0, 0.0];
+    let mut time = 0;
+    let speed = 500;
 
     // Event loop
     while let Some(event) = window.next() {
+        time += 1;
 
         // Catch the events of the keyboard
         if let Some(Button::Keyboard(key)) = event.press_args() {
@@ -233,15 +237,13 @@ fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: i32)
                 change = true;
             }
         }
-        let mut x = 0.0;
-        let mut y = 0.0;
         event.mouse_cursor(|pos| {
-            x = pos[0];
-            y = pos[1];
+            cursor = pos;
         });
+        // let mouse_pos = event.mouse_cursor_args();
         if change {
             println!("clicked - 1");
-            canvas_squares.change_state(x, y);
+            canvas_squares.change_state(cursor[0], cursor[1]);
         }
 
         let mut canvas = canvas_squares.get_canvas();
@@ -264,8 +266,9 @@ fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: i32)
             //     [0.0, 0.0, 100.0, 50.0], // rectangle
             //     c.transform, g);
         });
-        if auto {
+        if auto && time > speed {
             canvas_squares.next_generation();
+            time = 0;
         }
     }
 }
