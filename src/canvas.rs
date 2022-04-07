@@ -1,6 +1,10 @@
 // pub const NUM_SIDE_TOTAL : usize = 6;
 
 // mod cell;
+// use piston_window::types::Color;
+
+// const WHITE_COLOR: Color = [1.0, 1.0, 1.0, 1.0];
+
 use crate::cell::Cell;
 
 #[derive(Debug, Default)]
@@ -199,12 +203,12 @@ impl CanvasHex {
 pub struct CanvasSquare {
     row_num: usize,
     col_num: usize,
-    cell_side_length: i32,
+    cell_side_length: f64,
     display: Vec<Vec<Cell>>
 }
 
 impl CanvasSquare {
-    pub fn new(row_num_set: usize, col_num_set: usize, side_length: i32) -> CanvasSquare {
+    pub fn new(row_num_set: usize, col_num_set: usize, side_length: f64) -> CanvasSquare {
         // create 2d vector for cells
         let display_vector: Vec<Vec<Cell>> = vec![vec![Cell::new(); col_num_set]; row_num_set];
         return CanvasSquare {
@@ -239,6 +243,13 @@ impl CanvasSquare {
             }
             print!("\n\n");
         }
+    }
+    pub fn get_canvas(&mut self) -> Vec<Vec<Cell>> {
+        return self.display.clone(); 
+    }
+    pub fn change_state(&mut self, x: f64, y: f64) {
+        println!("x: {}, y: {}", x, y);
+        self.display[(y / self.cell_side_length) as usize][(x / self.cell_side_length) as usize].reverse_status();
     }
 
     pub fn do_nothing(&mut self) {

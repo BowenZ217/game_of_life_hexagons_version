@@ -1,5 +1,5 @@
 mod lib;
-
+mod draw;
 mod cell;
 // use crate::cell::Cell;
 mod canvas;
@@ -7,11 +7,20 @@ use crate::canvas::CanvasHex;
 use crate::canvas::CanvasSquare;
 use crate::canvas::CanvasTriangle;
 
+use draw::{draw_rectange};
+
 extern crate rand;
+extern crate piston_window;
 
 // use std::io::stdin;
 use std::{thread, time};
 
+use piston_window::*;
+use piston_window::types::Color;
+
+const BLACK_COLOR: Color = [0.0, 0.0, 0.0, 1.0];
+const WHITE_COLOR: Color = [1.0, 1.0, 1.0, 1.0];
+const GRAY_COLOR: Color = [0.2, 0.2, 0.2, 1.0];
 
 fn main() {
     let mut status: String;
@@ -74,7 +83,8 @@ fn main() {
         canvas_hexagons_display(row_num, col_num, loop_num);
     }
     if status == "SQUARE".to_string() {
-        canvas_square_display(row_num, col_num, loop_num);
+        // canvas_square_display(row_num, col_num, loop_num);
+        canvas_square_display_windows(row_num, col_num, 10);
     }
     if status == "TRIANGLE".to_string() {
         canvas_triangle_display(row_num, col_num, loop_num)
@@ -142,7 +152,7 @@ fn canvas_hexagons_display(row_num: usize, col_num: usize, loop_num: usize) {
 fn canvas_square_display(row_num: usize, col_num: usize, loop_num: usize) {
     let separation = "------------------------------------------------------------------------------------";
     let sleep_time = time::Duration::from_millis(1500);
-    let mut canvas_squares = CanvasSquare::new(row_num, col_num, 5);
+    let mut canvas_squares = CanvasSquare::new(row_num, col_num, 5.0);
     for _num in 0..150 {
         let x: usize = rand::random::<usize>() % col_num;
         let y: usize = rand::random::<usize>() % row_num;
@@ -179,4 +189,83 @@ fn canvas_triangle_display(row_num: usize, col_num: usize, loop_num: usize) {
         thread::sleep(sleep_time);
     }
     canvas_triangles.do_nothing();
+}
+
+fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: i32) {
+    // Prepare window settings
+    let mut window_settings = WindowSettings::new("Rust Game of Life - square",
+    [(((col_num as i32) * cell_size + 10) as u32), (((row_num as i32) * cell_size + 10) as u32)]).exit_on_esc(true);
+
+    // Fix vsync extension error for linux
+    window_settings.set_vsync(true); 
+
+    // Create a window
+    let mut window: PistonWindow = window_settings.build().unwrap();
+
+    // Create a canvas
+    let mut canvas_squares = CanvasSquare::new(row_num, col_num, cell_size as f64);
+    for _num in 0..150 {
+        let x: usize = rand::random::<usize>() % col_num;
+        let y: usize = rand::random::<usize>() % row_num;
+        canvas_squares.reverse_status(y.into(), x.into());
+    }
+    let mut auto = false;
+
+    // Event loop
+    while let Some(event) = window.next() {
+
+        // Catch the events of the keyboard
+        if let Some(Button::Keyboard(key)) = event.press_args() {
+            if key == Key::Space {
+                if auto {
+                    auto = false;
+                } else {
+                    auto = true;
+                }
+            }
+            if key == Key::Return {
+                canvas_squares.next_generation();
+            }
+        };
+        let mut change = false;
+        if let Some(Button::Mouse(button)) = event.press_args() {
+            if button == MouseButton::Left {
+                change = true;
+            }
+        }
+        let mut x = 0.0;
+        let mut y = 0.0;
+        event.mouse_cursor(|pos| {
+            x = pos[0];
+            y = pos[1];
+        });
+        if change {
+            println!("clicked - 1");
+            canvas_squares.change_state(x, y);
+        }
+
+        let mut canvas = canvas_squares.get_canvas();
+        // Draw all of them
+        window.draw_2d(&event, |c, g, _| {
+            clear(BLACK_COLOR, g);
+            for row in 0..row_num {
+                for col in 0..col_num {
+                    if canvas[row][col].is_alive() {
+                        rectangle(WHITE_COLOR, // red
+                            [(col as i32 * cell_size) as f64, 
+                             (row as i32 * cell_size) as f64, 
+                             cell_size as f64, 
+                             cell_size as f64], // rectangle
+                            c.transform, g);
+                    }
+                }
+            }
+            // rectangle(WHITE_COLOR, // red
+            //     [0.0, 0.0, 100.0, 50.0], // rectangle
+            //     c.transform, g);
+        });
+        if auto {
+            canvas_squares.next_generation();
+        }
+    }
 }
