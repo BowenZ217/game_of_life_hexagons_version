@@ -248,7 +248,6 @@ impl CanvasSquare {
         return self.display.clone(); 
     }
     pub fn change_state(&mut self, x: f64, y: f64) {
-        println!("x: {}, y: {}", x, y);
         self.display[(y / self.cell_side_length) as usize][(x / self.cell_side_length) as usize].reverse_status();
     }
 

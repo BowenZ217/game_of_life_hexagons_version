@@ -62,6 +62,19 @@ fn main() {
     }
     let col_num = col_num.trim().parse::<usize>().expect("Failed to parse int");
 
+    let mut cell_size: String;
+    loop {
+        println!("size of each cell: ");
+        cell_size = lib::read_one().trim().to_string();
+
+        if lib::is_number(cell_size.clone()) {
+            break
+        }
+
+        println!("Invalid status.  Please try again.")
+    }
+    let cell_size = cell_size.trim().parse::<i32>().expect("Failed to parse int");
+
     let mut loop_num: String;
     loop {
         println!("number of loops: ");
@@ -84,7 +97,7 @@ fn main() {
     }
     if status == "SQUARE".to_string() {
         // canvas_square_display(row_num, col_num, loop_num);
-        canvas_square_display_windows(row_num, col_num, 10);
+        canvas_square_display_windows(row_num, col_num, cell_size);
     }
     if status == "TRIANGLE".to_string() {
         canvas_triangle_display(row_num, col_num, loop_num)
@@ -242,7 +255,6 @@ fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: i32)
         });
         // let mouse_pos = event.mouse_cursor_args();
         if change {
-            println!("clicked - 1");
             canvas_squares.change_state(cursor[0], cursor[1]);
         }
 
