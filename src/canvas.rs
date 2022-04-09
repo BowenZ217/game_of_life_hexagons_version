@@ -25,8 +25,10 @@ impl CanvasHex {
         let display_vector: Vec<Vec<Cell>> = CanvasHex::get_set_position(cells_vertical, cells_horizontal, side_length);
         // let display_vector: Vec<Vec<Cell>> = Vec::new();
         return CanvasHex {
-            height: side_length*((3 as f64).sqrt()) * (cells_vertical as f64),
-            width: side_length * (cells_horizontal as f64),
+            // height: side_length*((3 as f64).sqrt()) * (cells_vertical as f64),
+            // width: side_length * (cells_horizontal as f64),
+            height: (((3.0 as f64).sqrt() * 3.0) / 2.0) * (cells_vertical as f64) * side_length,
+            width: (3.0 / 2.0) * (cells_horizontal as f64) * side_length,
             cells_vertical: cells_vertical,
             cells_horizontal: cells_horizontal,
             cell_side_length: side_length,
@@ -53,12 +55,27 @@ impl CanvasHex {
             for col in 0..cells_horizontal {
                 // unfinished   !!!
 
-                let x = cell_side_length + (3.0*col as f64)*cell_side_length;
+                // let x = col as f64 * cell_side_length;
+                // let y = row as f64 * cell_side_length;
+                // let x = cell_side_length + (3.0*col as f64)*cell_side_length;
 
-                // sqrt(3)/2 approx = 0.8660254
-                let y =  0.8660254 * cell_side_length + (2.0*row as f64)*cell_side_length;
-                display_vector[row][col].set_x(x);
-                display_vector[row][col].set_y(y);
+                // // sqrt(3)/2 approx = 0.8660254
+                // let y =  0.8660254 * cell_side_length + (2.0*row as f64)*cell_side_length;
+
+                if row % 2 == 0 {
+                    let x = (2.5 + 3.0 * (col as f64)) * cell_side_length;
+                    let y = (((3.0 as f64).sqrt() / 2.0) * (1.0 + 2.0 * row as f64)) * cell_side_length;
+                    display_vector[row][col].set_x(x);
+                    display_vector[row][col].set_y(y);
+                }
+                else {
+                    let x = (1.0 + (3.0 * (col as f64))) * cell_side_length;
+                    let y = (2.0 * row as f64 + 1.0) * ((3.0 as f64).sqrt() / 2.0) * cell_side_length;
+                    display_vector[row][col].set_x(x);
+                    display_vector[row][col].set_y(y);
+                }
+                // display_vector[row][col].set_x(x);
+                // display_vector[row][col].set_y(y);
             }
         }
         return display_vector;
@@ -161,10 +178,10 @@ impl CanvasHex {
         self.display[row][col].reverse_status();
     }
 
-    // pub fn display_canvas(&mut self) {
-    //     todo!()
-    //     // Ask at office hours
-    // }
+    pub fn display_canvas(&mut self) {
+        // todo!()
+        // Ask at office hours
+    }
 
     // a easy way to display it out in terminal
     pub fn display_in_terminal(&mut self) {
@@ -188,13 +205,23 @@ impl CanvasHex {
             }
         }
     }
-
-    pub fn do_nothing(&mut self) {
-        self.display[0][0].get_x();
-        self.display[0][0].get_y();
-        self.height;
-        self.width;
-        self.cell_side_length;
+    // pub fn get_canvas(&mut self) -> Vec<Vec<Cell>> {
+    //     return self.display.clone(); 
+    // }
+    pub fn get_height(&mut self) -> f64 {
+        return self.height;
+    }
+    pub fn get_width(&mut self) -> f64 {
+        return self.width;
+    }
+    pub fn get_cell_center_x(&mut self, row: usize, col: usize) -> f64 {
+        return self.display[row][col].get_x();
+    }
+    pub fn get_cell_center_y(&mut self, row: usize, col: usize) -> f64 {
+        return self.display[row][col].get_y();
+    }
+    pub fn is_alive(&mut self, row: usize, col: usize) -> bool {
+        return self.display[row][col].is_alive();
     }
 }
 
@@ -249,10 +276,6 @@ impl CanvasSquare {
     }
     pub fn change_state(&mut self, x: f64, y: f64) {
         self.display[(y / self.cell_side_length) as usize][(x / self.cell_side_length) as usize].reverse_status();
-    }
-
-    pub fn do_nothing(&mut self) {
-        self.cell_side_length;
     }
     // helper
     fn alive_nei_num(&mut self, row: usize, col: usize) -> i32 {
@@ -313,203 +336,3 @@ impl CanvasSquare {
 }
 
 
-#[derive(Debug, Default)]
-pub struct CanvasTriangle {
-    row_num: usize,
-    col_num: usize,
-    cell_side_length: i32,
-    display: Vec<Vec<Cell>>
-}
-
-impl CanvasTriangle {
-    pub fn new(row_num_set: usize, col_num_set: usize, side_length: i32) -> CanvasTriangle {
-        // create 2d vector for cells
-        let display_vector: Vec<Vec<Cell>> = vec![vec![Cell::new(); col_num_set]; row_num_set];
-        return CanvasTriangle {
-            row_num: row_num_set,
-            col_num: col_num_set,
-            cell_side_length: side_length,
-            display: display_vector
-        };
-    }
-    pub fn next_generation(&mut self) {
-        // todo!();
-        let mut next = self.display.clone();
-        for row in 0..self.row_num {
-            for col in 0..self.col_num {
-                let next_state = CanvasTriangle::check(self, row, col);
-                next[row][col].change_status(next_state);
-            }
-        }
-        self.display = next;
-    }
-
-    //  let user change the cell's status in canvas
-    pub fn reverse_status(&mut self, row: usize, col: usize) {
-        self.display[row][col].reverse_status();
-    }
-    // a easy way to display it out in terminal
-    pub fn display_in_terminal(&mut self) {
-        for row in 0..self.row_num {
-            for col in 0..self.col_num {
-                print!("{} ", self.get_status_string(row, col));
-            }
-            print!("\n");
-        }
-    }
-
-    pub fn do_nothing(&mut self) {
-        self.cell_side_length;
-    }
-    // helper
-    fn get_status_string(&mut self, row: usize, col: usize) -> &str {
-        let odd_alive = "▲";
-        let even_alive = "▼";
-        // let odd_dead = "∆";
-        // let even_dead = "∇";
-        let odd_dead = " ";
-        let even_dead = " ";
-        if row % 2 == 0 && col % 2 != 0 || row % 2 != 0 && col % 2 == 0 {
-            if self.display[row][col].is_alive() {
-                return even_alive;
-            }
-            else {
-                return even_dead;
-            }
-        }
-        else {
-            if self.display[row][col].is_alive() {
-                return odd_alive;
-            }
-            else {
-                return odd_dead;
-            }
-        }
-    }
-
-    fn alive_nei_num(&mut self, row: usize, col: usize) -> i32 {
-        let mut count = 0;
-        if row % 2 == 0 {
-            // odd rows
-            if col % 2 == 0 {
-                // odd cols
-                if row > 0 && self.display[row - 1][col].is_alive() {
-                    count += 1;
-                }
-                if col > 0 && self.display[row][col - 1].is_alive() {
-                    count += 1;
-                }
-                if col < self.col_num - 1 && self.display[row][col + 1].is_alive() {
-                    count += 1;
-                }
-                if row < self.row_num - 1 {
-                    if self.display[row + 1][col].is_alive() {
-                        count += 1;
-                    }
-                    if col > 0 && self.display[row + 1][col - 1].is_alive() {
-                        count += 1;
-                    }
-                    if col < self.col_num - 1 && self.display[row + 1][col + 1].is_alive() {
-                        count += 1;
-                    }
-                }
-            }
-            else {
-                // even cols
-                if row > 0 {
-                    if self.display[row - 1][col].is_alive() {
-                        count += 1;
-                    }
-                    if col > 0 && self.display[row - 1][col - 1].is_alive() {
-                        count += 1;
-                    }
-                    if col < self.col_num - 1 && self.display[row - 1][col + 1].is_alive() {
-                        count += 1;
-                    }
-                }
-                if row < self.row_num - 1 && self.display[row + 1][col].is_alive() {
-                    count += 1;
-                }
-                if col > 0 && self.display[row][col - 1].is_alive() {
-                    count += 1;
-                }
-                if col < self.col_num - 1 && self.display[row][col + 1].is_alive() {
-                    count += 1;
-                }
-            }
-        }
-        else {
-            // even rows
-            if col % 2 == 0 {
-                // odd cols
-                if row > 0 {
-                    if self.display[row - 1][col].is_alive() {
-                        count += 1;
-                    }
-                    if col > 0 && self.display[row - 1][col - 1].is_alive() {
-                        count += 1;
-                    }
-                    if col < self.col_num - 1 && self.display[row - 1][col + 1].is_alive() {
-                        count += 1;
-                    }
-                }
-                if row < self.row_num - 1 && self.display[row + 1][col].is_alive() {
-                    count += 1;
-                }
-                if col > 0 && self.display[row][col - 1].is_alive() {
-                    count += 1;
-                }
-                if col < self.col_num - 1 && self.display[row][col + 1].is_alive() {
-                    count += 1;
-                }
-            }
-            else {
-                // even cols
-                if row > 0 && self.display[row - 1][col].is_alive() {
-                    count += 1;
-                }
-                if col > 0 && self.display[row][col - 1].is_alive() {
-                    count += 1;
-                }
-                if col < self.col_num - 1 && self.display[row][col + 1].is_alive() {
-                    count += 1;
-                }
-                if row < self.row_num - 1 {
-                    if self.display[row + 1][col].is_alive() {
-                        count += 1;
-                    }
-                    if col > 0 && self.display[row + 1][col - 1].is_alive() {
-                        count += 1;
-                    }
-                    if col < self.col_num - 1 && self.display[row + 1][col + 1].is_alive() {
-                        count += 1;
-                    }
-                }
-            }
-        }
-        count
-    }
-    // rules
-    fn check(&mut self, row: usize, col: usize) -> bool {
-        // todo!();
-        //  true    means   alive
-        //  false   means   dead
-        let neighbor_num = CanvasTriangle::alive_nei_num(self, row, col);
-        if self.display[row][col].is_alive() {
-            // 
-            if neighbor_num == 3 {
-                return true;
-            }
-            if neighbor_num == 5 {
-                return true;
-            }
-        }
-        else {
-            //  reproduction
-            if neighbor_num == 2 {
-                return true;
-            }
-        }
-        return false;
-    }
-}
