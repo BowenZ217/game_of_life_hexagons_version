@@ -164,7 +164,7 @@ impl CanvasHex {
     pub fn next_generation(&mut self) {
         // todo!();
         let mut next = self.display.clone();
-        for row in 0..2*self.cells_vertical {
+        for row in 0..self.cells_vertical {
             for col in 0..self.cells_horizontal {
                 let next_state = CanvasHex::check(self, row, col);
                 next[row][col].change_status(next_state);
@@ -179,14 +179,15 @@ impl CanvasHex {
     }
     pub fn change_state(&mut self, x: f64, y: f64) {
         // not finished!!!
-        let c_w = self.width / self.cells_horizontal as f64;
-        let col = (x / c_w) as usize;
-        if col % 2 == 0 {
-            let row = (y / ((3.0 as f64).sqrt() * self.cell_side_length)) as usize;
+        let c_w = self.width / (self.cells_horizontal * 2) as f64;
+        let temp = x / c_w;
+        let col = temp as usize / 2;
+        if temp % 2.0 == 0.0 {
+            let row = (y / ((3.0 as f64).sqrt() * self.cell_side_length) * 2.0) as usize;
             self.display[row][col].reverse_status();
         }
         else {
-            let row = (((y - ((3.0 as f64).sqrt() / 2.0) * self.cell_side_length)) / ((3.0 as f64).sqrt() * self.cell_side_length)) as usize;
+            let row = (((y - ((3.0 as f64).sqrt() / 2.0) * self.cell_side_length)) * 2.0 / ((3.0 as f64).sqrt() * self.cell_side_length)) as usize;
             self.display[row][col].reverse_status();
         }
         // let row: usize = y/(3.0);
