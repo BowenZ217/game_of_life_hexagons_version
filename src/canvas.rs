@@ -64,13 +64,13 @@ impl CanvasHex {
 
                 if row % 2 == 0 {
                     let x = (2.5 + 3.0 * (col as f64)) * cell_side_length;
-                    let y = (((3.0 as f64).sqrt() / 2.0) * (1.0 + 2.0 * row as f64)) * cell_side_length;
+                    let y = (((3.0 as f64).sqrt() / 2.0) * (1.0 + row as f64)) * cell_side_length;
                     display_vector[row][col].set_x(x);
                     display_vector[row][col].set_y(y);
                 }
                 else {
                     let x = (1.0 + (3.0 * (col as f64))) * cell_side_length;
-                    let y = (2.0 * row as f64 + 1.0) * ((3.0 as f64).sqrt() / 2.0) * cell_side_length;
+                    let y = (row as f64 + 1.0) * ((3.0 as f64).sqrt() / 2.0) * cell_side_length;
                     display_vector[row][col].set_x(x);
                     display_vector[row][col].set_y(y);
                 }
@@ -177,10 +177,11 @@ impl CanvasHex {
     pub fn reverse_status(&mut self, row: usize, col: usize) {
         self.display[row][col].reverse_status();
     }
-
-    pub fn display_canvas(&mut self) {
-        // todo!()
-        // Ask at office hours
+    pub fn change_state(&mut self, x: f64, y: f64) {
+        // not finished!!!
+        let row: usize = 0;
+        let col: usize = 0;
+        self.display[row][col].reverse_status();
     }
 
     // a easy way to display it out in terminal
