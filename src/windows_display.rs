@@ -184,7 +184,7 @@ pub fn canvas_hexagon_display_windows(row_num: usize, col_num: usize, cell_size:
         // Draw all of them
         window.draw_2d(&event, |c, g, _| {
             clear(GRAY_COLOR, g);
-            for row in 0..row_num {
+            for row in 0..2*row_num {
                 for col in 0..col_num {
                     if canvas_hexagons.is_alive(row, col) {
                         // for testing the center

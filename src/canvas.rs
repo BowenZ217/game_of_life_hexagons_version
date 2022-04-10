@@ -27,8 +27,8 @@ impl CanvasHex {
         return CanvasHex {
             // height: side_length*((3 as f64).sqrt()) * (cells_vertical as f64),
             // width: side_length * (cells_horizontal as f64),
-            height: (((3.0 as f64).sqrt() * 3.0) / 2.0) * (cells_vertical as f64) * side_length,
-            width: (3.0 / 2.0) * (cells_horizontal as f64) * side_length,
+            height: ((3.0 as f64).sqrt() / 2.0) * (cells_vertical as f64) * side_length + side_length,
+            width: (cells_horizontal as f64) * side_length * 3.0 + 0.5 * side_length,
             cells_vertical: cells_vertical,
             cells_horizontal: cells_horizontal,
             cell_side_length: side_length,
@@ -164,7 +164,7 @@ impl CanvasHex {
     pub fn next_generation(&mut self) {
         // todo!();
         let mut next = self.display.clone();
-        for row in 0..self.cells_vertical {
+        for row in 0..2*self.cells_vertical {
             for col in 0..self.cells_horizontal {
                 let next_state = CanvasHex::check(self, row, col);
                 next[row][col].change_status(next_state);
@@ -179,9 +179,23 @@ impl CanvasHex {
     }
     pub fn change_state(&mut self, x: f64, y: f64) {
         // not finished!!!
-        let row: usize = 0;
-        let col: usize = 0;
-        self.display[row][col].reverse_status();
+        let c_w = self.width / self.cells_horizontal as f64;
+        let col = (x / c_w) as usize;
+        if col % 2 == 0 {
+            let row = (y / ((3.0 as f64).sqrt() * self.cell_side_length)) as usize;
+            self.display[row][col].reverse_status();
+        }
+        else {
+            let row = (((y - ((3.0 as f64).sqrt() / 2.0) * self.cell_side_length)) / ((3.0 as f64).sqrt() * self.cell_side_length)) as usize;
+            self.display[row][col].reverse_status();
+        }
+        // let row: usize = y/(3.0);
+        // let col: usize = 0;
+        // if row % 2 == 0 {
+        //     col = 
+        // }
+        
+        // self.display[row][col].reverse_status();
     }
 
     // a easy way to display it out in terminal
