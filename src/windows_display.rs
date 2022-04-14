@@ -27,11 +27,6 @@ pub fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: 
 
     // Create a canvas
     let mut canvas_squares = CanvasSquare::new(row_num, col_num, cell_size as f64);
-    for _num in 0..150 {
-        let x: usize = rand::random::<usize>() % col_num;
-        let y: usize = rand::random::<usize>() % row_num;
-        canvas_squares.reverse_status(y.into(), x.into());
-    }
     let mut auto = false;
     let mut cursor = [0.0, 0.0];
     let mut time = 0;
@@ -54,13 +49,20 @@ pub fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: 
                 canvas_squares.next_generation();
             }
             if key == Key::Up {
-                if speed > 50 {
+                if speed >= 0 {
                     speed -= 50;
                 }
             }
             if key == Key::Down {
                 if speed < 1000 {
                     speed += 50;
+                }
+            }
+            if key == Key::R {
+                for row in 0..row_num {
+                    for col in 0..col_num {
+                        canvas_squares.set_state(row, col, rand::random::<bool>());
+                    }
                 }
             }
         };
@@ -90,7 +92,7 @@ pub fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: 
                         draw_rectange(WHITE_COLOR, 
                             (col as i32 * cell_size) as f64, // start_x
                             (row as i32 * cell_size) as f64, // start_y
-                            cell_size as f64 - 0.5, 
+                            cell_size as f64 - 1.0, 
                             &c, 
                             g);
                     }
@@ -98,7 +100,7 @@ pub fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: 
                         draw_rectange(BLACK_COLOR, 
                             (col as i32 * cell_size) as f64, // start_x
                             (row as i32 * cell_size) as f64, // start_y
-                            cell_size as f64 - 0.5, 
+                            cell_size as f64 - 1.0, 
                             &c, 
                             g);
                     }
@@ -127,11 +129,6 @@ pub fn canvas_hexagon_display_windows(row_num: usize, col_num: usize, cell_size:
     // Create a window
     let mut window: PistonWindow = window_settings.build().unwrap();
 
-    for _num in 0..150 {
-        let x: usize = rand::random::<usize>() % col_num;
-        let y: usize = rand::random::<usize>() % row_num;
-        canvas_hexagons.reverse_status(y.into(), x.into());
-    }
     let mut auto = false;
     let mut cursor = [0.0, 0.0];
     let mut time = 0;
@@ -154,13 +151,20 @@ pub fn canvas_hexagon_display_windows(row_num: usize, col_num: usize, cell_size:
                 canvas_hexagons.next_generation();
             }
             if key == Key::Up {
-                if speed > 50 {
+                if speed >= 0 {
                     speed -= 50;
                 }
             }
             if key == Key::Down {
                 if speed < 1000 {
                     speed += 50;
+                }
+            }
+            if key == Key::R {
+                for row in 0..2*row_num {
+                    for col in 0..col_num {
+                        canvas_hexagons.set_state(row, col, rand::random::<bool>());
+                    }
                 }
             }
         };

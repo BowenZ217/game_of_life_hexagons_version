@@ -239,6 +239,9 @@ impl CanvasHex {
     pub fn is_alive(&mut self, row: usize, col: usize) -> bool {
         return self.display[row][col].is_alive();
     }
+    pub fn set_state(&mut self, row: usize, col: usize, next: bool) {
+        self.display[row][col].change_status(next);
+    }
 }
 
 
@@ -292,6 +295,9 @@ impl CanvasSquare {
     }
     pub fn change_state(&mut self, x: f64, y: f64) {
         self.display[(y / self.cell_side_length) as usize][(x / self.cell_side_length) as usize].reverse_status();
+    }
+    pub fn set_state(&mut self, row: usize, col: usize, next: bool) {
+        self.display[row][col].change_status(next);
     }
     // helper
     fn alive_nei_num(&mut self, row: usize, col: usize) -> i32 {
