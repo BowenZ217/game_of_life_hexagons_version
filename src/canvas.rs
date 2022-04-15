@@ -1,10 +1,3 @@
-// pub const NUM_SIDE_TOTAL : usize = 6;
-
-// mod cell;
-// use piston_window::types::Color;
-
-// const WHITE_COLOR: Color = [1.0, 1.0, 1.0, 1.0];
-
 use crate::cell::Cell;
 
 #[derive(Debug, Default)]
@@ -23,10 +16,8 @@ impl CanvasHex {
         let cells_vertical = cells_vertical_set * 2;
         // create 2d vector for cells, also set up the position
         let display_vector: Vec<Vec<Cell>> = CanvasHex::get_set_position(cells_vertical, cells_horizontal, side_length);
-        // let display_vector: Vec<Vec<Cell>> = Vec::new();
+        
         return CanvasHex {
-            // height: side_length*((3 as f64).sqrt()) * (cells_vertical as f64),
-            // width: side_length * (cells_horizontal as f64),
             height: ((3.0 as f64).sqrt() / 2.0) * (cells_vertical as f64) * side_length + side_length,
             width: (cells_horizontal as f64) * side_length * 3.0 + 0.5 * side_length,
             cells_vertical: cells_vertical,
@@ -37,8 +28,6 @@ impl CanvasHex {
     }
 
     fn get_set_position(cells_vertical: usize, cells_horizontal: usize, cell_side_length: f64) -> Vec<Vec<Cell>> {
-        // todo!();
-
         // Calculate the position for each cell
         //                 _____       _____       _____       _____
         //           _____/ 0,0 \_____/ 0,1 \_____/ 0,2 \_____/ 0,3 \
@@ -53,29 +42,23 @@ impl CanvasHex {
         let mut display_vector: Vec<Vec<Cell>> = vec![vec![Cell::new(); cells_horizontal]; cells_vertical];
         for row in 0..cells_vertical {
             for col in 0..cells_horizontal {
-                // unfinished   !!!
+                // sqrt(3)/2 approx = 0.8660254
 
-                // let x = col as f64 * cell_side_length;
-                // let y = row as f64 * cell_side_length;
-                // let x = cell_side_length + (3.0*col as f64)*cell_side_length;
-
-                // // sqrt(3)/2 approx = 0.8660254
-                // let y =  0.8660254 * cell_side_length + (2.0*row as f64)*cell_side_length;
-
+                // Position of even and odd row is diifferent
+                // odd rows (start from 0)
                 if row % 2 == 0 {
                     let x = (2.5 + 3.0 * (col as f64)) * cell_side_length;
                     let y = (((3.0 as f64).sqrt() / 2.0) * (1.0 + row as f64)) * cell_side_length;
                     display_vector[row][col].set_x(x);
                     display_vector[row][col].set_y(y);
                 }
+                // even rows
                 else {
                     let x = (1.0 + (3.0 * (col as f64))) * cell_side_length;
                     let y = (row as f64 + 1.0) * ((3.0 as f64).sqrt() / 2.0) * cell_side_length;
                     display_vector[row][col].set_x(x);
                     display_vector[row][col].set_y(y);
                 }
-                // display_vector[row][col].set_x(x);
-                // display_vector[row][col].set_y(y);
             }
         }
         return display_vector;
@@ -85,6 +68,7 @@ impl CanvasHex {
     // get number of alive neighbors of that cell
     fn alive_nei_num_even(&mut self, row: usize, col: usize) -> i32 {
         let mut count = 0;
+        // odd rows
         if row % 2 == 0 {
             // Even row
             //         (-2, 0)
@@ -112,6 +96,7 @@ impl CanvasHex {
                 count += 1;
             }
         }
+        // even rows
         else {
             if row > 1 && self.display[row - 2][col].is_alive() {
                 count += 1;
@@ -140,9 +125,9 @@ impl CanvasHex {
 
     // rules
     fn check(&mut self, row: usize, col: usize) -> bool {
-        // todo!();
         //  true    means   alive
         //  false   means   dead
+        // check how many alive neighbor cells
         let neighbor_num = CanvasHex::alive_nei_num_even(self, row, col);
         if self.display[row][col].is_alive() {
             // 
@@ -162,7 +147,6 @@ impl CanvasHex {
         return false;
     }
     pub fn next_generation(&mut self) {
-        // todo!();
         let mut next = self.display.clone();
         for row in 0..self.cells_vertical {
             for col in 0..self.cells_horizontal {
@@ -173,14 +157,10 @@ impl CanvasHex {
         self.display = next;
     }
 
-    //  let user change the cell's status in canvas
-    pub fn reverse_status(&mut self, row: usize, col: usize) {
-        self.display[row][col].reverse_status();
-    }
+    // use user mouse position (when clicked) to check state
     pub fn change_state(&mut self, x: f64, y: f64) {
-        // not finished!!!
-        let c_w = self.width / (self.cells_horizontal * 2) as f64;
-        let temp = x / c_w;
+        let size_of_each_cell_in_col = self.width / (self.cells_horizontal * 2) as f64;
+        let temp = x / size_of_each_cell_in_col;
         let col = temp as usize / 2;
         if temp % 2.0 == 0.0 {
             let row = (y / ((3.0 as f64).sqrt() * self.cell_side_length) * 2.0) as usize;
@@ -190,13 +170,6 @@ impl CanvasHex {
             let row = (((y - ((3.0 as f64).sqrt() / 2.0) * self.cell_side_length)) * 2.0 / ((3.0 as f64).sqrt() * self.cell_side_length)) as usize;
             self.display[row][col].reverse_status();
         }
-        // let row: usize = y/(3.0);
-        // let col: usize = 0;
-        // if row % 2 == 0 {
-        //     col = 
-        // }
-        
-        // self.display[row][col].reverse_status();
     }
 
     // a easy way to display it out in terminal
@@ -221,9 +194,7 @@ impl CanvasHex {
             }
         }
     }
-    // pub fn get_canvas(&mut self) -> Vec<Vec<Cell>> {
-    //     return self.display.clone(); 
-    // }
+    // geter
     pub fn get_height(&mut self) -> f64 {
         return self.height;
     }
@@ -238,6 +209,12 @@ impl CanvasHex {
     }
     pub fn is_alive(&mut self, row: usize, col: usize) -> bool {
         return self.display[row][col].is_alive();
+    }
+
+    // seter
+    //  let user change the cell's status in canvas
+    pub fn reverse_status(&mut self, row: usize, col: usize) {
+        self.display[row][col].reverse_status();
     }
     pub fn set_state(&mut self, row: usize, col: usize, next: bool) {
         self.display[row][col].change_status(next);
@@ -265,7 +242,6 @@ impl CanvasSquare {
         };
     }
     pub fn next_generation(&mut self) {
-        // todo!();
         let mut next = self.display.clone();
         for row in 0..self.row_num {
             for col in 0..self.col_num {
@@ -276,10 +252,6 @@ impl CanvasSquare {
         self.display = next;
     }
 
-    //  let user change the cell's status in canvas
-    pub fn reverse_status(&mut self, row: usize, col: usize) {
-        self.display[row][col].reverse_status();
-    }
     // a easy way to display it out in terminal
     pub fn display_in_terminal(&mut self) {
         let space_2 = "  ";
@@ -289,15 +261,6 @@ impl CanvasSquare {
             }
             print!("\n\n");
         }
-    }
-    pub fn get_canvas(&mut self) -> Vec<Vec<Cell>> {
-        return self.display.clone(); 
-    }
-    pub fn change_state(&mut self, x: f64, y: f64) {
-        self.display[(y / self.cell_side_length) as usize][(x / self.cell_side_length) as usize].reverse_status();
-    }
-    pub fn set_state(&mut self, row: usize, col: usize, next: bool) {
-        self.display[row][col].change_status(next);
     }
     // helper
     fn alive_nei_num(&mut self, row: usize, col: usize) -> i32 {
@@ -334,12 +297,10 @@ impl CanvasSquare {
     }
     // rules
     fn check(&mut self, row: usize, col: usize) -> bool {
-        // todo!();
         //  true    means   alive
         //  false   means   dead
         let neighbor_num = CanvasSquare::alive_nei_num(self, row, col);
         if self.display[row][col].is_alive() {
-            // 
             if neighbor_num == 2 {
                 return true;
             }
@@ -354,6 +315,22 @@ impl CanvasSquare {
             }
         }
         return false;
+    }
+    // seter
+    //  let user change the cell's status in canvas
+    pub fn reverse_status(&mut self, row: usize, col: usize) {
+        self.display[row][col].reverse_status();
+    }
+    pub fn set_state(&mut self, row: usize, col: usize, next: bool) {
+        self.display[row][col].change_status(next);
+    }
+    pub fn change_state(&mut self, x: f64, y: f64) {
+        self.display[(y / self.cell_side_length) as usize][(x / self.cell_side_length) as usize].reverse_status();
+    }
+
+    // geter
+    pub fn get_canvas(&mut self) -> Vec<Vec<Cell>> {
+        return self.display.clone(); 
     }
 }
 

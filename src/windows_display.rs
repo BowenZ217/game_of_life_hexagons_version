@@ -8,10 +8,13 @@ use crate::draw::{draw_rectange, draw_hexagon};
 extern crate rand;
 extern crate piston_window;
 
+// dead cell color
 const BLACK_COLOR: Color = [0.0, 0.0, 0.0, 1.0];
+// background color
 const GRAY_COLOR: Color = [0.5, 0.5, 0.5, 1.0];
+// alive cell color
 const WHITE_COLOR: Color = [1.0, 1.0, 1.0, 1.0];
-const SPEED_INIT: i32 = 500;
+const SPEED_INIT: i32 = 300;
 
 pub fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: i32) {
     // Prepare window settings
@@ -27,6 +30,8 @@ pub fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: 
 
     // Create a canvas
     let mut canvas_squares = CanvasSquare::new(row_num, col_num, cell_size as f64);
+
+    // init
     let mut auto = false;
     let mut cursor = [0.0, 0.0];
     let mut time = 0;
@@ -38,6 +43,7 @@ pub fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: 
 
         // Catch the events of the keyboard
         if let Some(Button::Keyboard(key)) = event.press_args() {
+            // check for auto play
             if key == Key::Space {
                 if auto {
                     auto = false;
@@ -45,19 +51,23 @@ pub fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: 
                     auto = true;
                 }
             }
+            // if enter -> next loop
             if key == Key::Return {
                 canvas_squares.next_generation();
             }
+            // increase the speed of auto play
             if key == Key::Up {
                 if speed >= 0 {
-                    speed -= 50;
+                    speed -= 20;
                 }
             }
+            // decrease the speed of auto play
             if key == Key::Down {
-                if speed < 1000 {
-                    speed += 50;
+                if speed < 600 {
+                    speed += 20;
                 }
             }
+            // create some random alive cells
             if key == Key::R {
                 for row in 0..row_num {
                     for col in 0..col_num {
@@ -129,6 +139,7 @@ pub fn canvas_hexagon_display_windows(row_num: usize, col_num: usize, cell_size:
     // Create a window
     let mut window: PistonWindow = window_settings.build().unwrap();
 
+    // init
     let mut auto = false;
     let mut cursor = [0.0, 0.0];
     let mut time = 0;
@@ -140,6 +151,7 @@ pub fn canvas_hexagon_display_windows(row_num: usize, col_num: usize, cell_size:
 
         // Catch the events of the keyboard
         if let Some(Button::Keyboard(key)) = event.press_args() {
+            // check for auto play
             if key == Key::Space {
                 if auto {
                     auto = false;
@@ -147,19 +159,23 @@ pub fn canvas_hexagon_display_windows(row_num: usize, col_num: usize, cell_size:
                     auto = true;
                 }
             }
+            // if enter -> next loop
             if key == Key::Return {
                 canvas_hexagons.next_generation();
             }
+            // increase the speed of auto play
             if key == Key::Up {
                 if speed >= 0 {
-                    speed -= 50;
+                    speed -= 20;
                 }
             }
+            // decrease the speed of auto play
             if key == Key::Down {
-                if speed < 1000 {
-                    speed += 50;
+                if speed < 600 {
+                    speed += 20;
                 }
             }
+            // create some random alive cells
             if key == Key::R {
                 for row in 0..2*row_num {
                     for col in 0..col_num {
