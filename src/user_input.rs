@@ -1,6 +1,6 @@
 use crate::lib::{is_number, read_one};
 use crate::terminal_display::{canvas_hexagons_display, canvas_square_display};
-use crate::windows_display::{canvas_square_display_windows, canvas_hexagon_display_windows};
+use crate::windows_display::{canvas_square_display_windows, canvas_hexagon_display_windows, canvas_hexagon_display_windows_file, canvas_square_display_windows_file};
 
 pub fn hexagons() {
     let mut is_default: String;
@@ -8,7 +8,7 @@ pub fn hexagons() {
     loop {
         is_default = read_one().trim().to_uppercase();
 
-        if is_default == "Y" || is_default == "N" || is_default == "T" {
+        if is_default == "Y" || is_default == "N" || is_default == "T" || is_default == "1" {
             break
         }
         println!("Invalid status. Please try again. (Y / N)")
@@ -19,8 +19,13 @@ pub fn hexagons() {
         canvas_hexagon_display_windows(20, 20, 20);
     }
 
+    if is_default == "1" {
+        let file_name = read_one().trim().to_string();
+        canvas_hexagon_display_windows_file(&file_name);
+    }
+
     // terminal version
-    else if is_default == "T" {
+    if is_default == "T" {
         let mut row_num: String;
         println!("number of rows: ");
         loop {
@@ -63,7 +68,7 @@ pub fn hexagons() {
     }
 
     // use user input to create windows
-    else {
+    if is_default == "N" {
         let mut row_num: String;
         println!("number of rows: ");
         loop {
@@ -112,19 +117,23 @@ pub fn square() {
     loop {
         is_default = read_one().trim().to_uppercase();
 
-        if is_default == "Y" || is_default == "N" || is_default == "T" {
+        if is_default == "Y" || is_default == "N" || is_default == "T" || is_default == "1" {
             break
         }
         println!("Invalid status. Please try again. (Y / N)")
     }
 
+    if is_default == "1" {
+        let file_name = read_one().trim().to_string();
+        canvas_square_display_windows_file(&file_name);
+    }
 
     if is_default == "Y" {
         canvas_square_display_windows(30, 30, 20);
     }
 
     // terminal version
-    else if is_default == "T" {
+    if is_default == "T" {
         let mut row_num: String;
         println!("number of rows: ");
         loop {
@@ -167,7 +176,7 @@ pub fn square() {
     }
 
     // use user input to create windows
-    else {
+    if is_default == "N" {
         let mut row_num: String;
         println!("number of rows: ");
         loop {

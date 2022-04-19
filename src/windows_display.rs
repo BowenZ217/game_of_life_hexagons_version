@@ -237,3 +237,225 @@ pub fn canvas_hexagon_display_windows(row_num: usize, col_num: usize, cell_size:
         }
     }
 }
+pub fn canvas_hexagon_display_windows_file(file_name: &str) {
+    // Create a canvas
+    let mut canvas_hexagons = CanvasHex::new_f(file_name);
+
+    // Prepare window settings
+    let mut window_settings = WindowSettings::new("Rust Game of Life - hexagon",
+    [(canvas_hexagons.get_width() as u32), 
+     (canvas_hexagons.get_height() as u32)]).exit_on_esc(true);
+
+    // Fix vsync extension error for linux
+    window_settings.set_vsync(true); 
+
+    // Create a window
+    let mut window: PistonWindow = window_settings.build().unwrap();
+
+    // init
+    let mut auto = false;
+    let mut cursor = [0.0, 0.0];
+    let mut time = 0;
+    let mut speed = SPEED_INIT;
+
+    // Event loop
+    while let Some(event) = window.next() {
+        time += 1;
+
+        // Catch the events of the keyboard
+        if let Some(Button::Keyboard(key)) = event.press_args() {
+            // check for auto play
+            if key == Key::Space {
+                if auto {
+                    auto = false;
+                } else {
+                    auto = true;
+                }
+            }
+            // if enter -> next loop
+            if key == Key::Return {
+                canvas_hexagons.next_generation();
+            }
+            // increase the speed of auto play
+            if key == Key::Up {
+                if speed >= 0 {
+                    speed -= 20;
+                }
+            }
+            // decrease the speed of auto play
+            if key == Key::Down {
+                if speed < 600 {
+                    speed += 20;
+                }
+            }
+            // create some random alive cells
+            if key == Key::R {
+                for row in 0..canvas_hexagons.get_row_num() {
+                    for col in 0..canvas_hexagons.get_col_num() {
+                        canvas_hexagons.set_state(row, col, rand::random::<bool>());
+                    }
+                }
+            }
+        };
+        // check mouse click
+        let mut change = false;
+        if let Some(Button::Mouse(button)) = event.press_args() {
+            if button == MouseButton::Left {
+                change = true;
+            }
+        }
+        // get mouse position
+        event.mouse_cursor(|pos| {
+            cursor = pos;
+        });
+        // check if user have a mouse click -> change current cell state
+        if change {
+            canvas_hexagons.change_state(cursor[0], cursor[1]);
+        }
+
+        // let mut canvas = canvas_hexagons.get_canvas();
+        // Draw all of them
+        window.draw_2d(&event, |c, g, _| {
+            clear(GRAY_COLOR, g);
+            for row in 0..canvas_hexagons.get_row_num() {
+                for col in 0..canvas_hexagons.get_col_num() {
+                    if canvas_hexagons.is_alive(row, col) {
+                        // for testing the center
+                        // draw_rectange(WHITE_COLOR, 
+                        //     canvas_hexagons.get_cell_center_x(row, col), // start_x
+                        //     canvas_hexagons.get_cell_center_y(row, col), // start_y
+                        //     (cell_size * 2 / 3) as f64, 
+                        //     &c, 
+                        //     g);
+                        draw_hexagon(
+                            WHITE_COLOR,
+                            canvas_hexagons.get_cell_center_x(row, col),
+                            canvas_hexagons.get_cell_center_y(row, col),
+                            canvas_hexagons.get_cell_size() - 0.5, &c, g);
+                    }
+                    else {
+                        draw_hexagon(
+                            BLACK_COLOR,
+                            canvas_hexagons.get_cell_center_x(row, col),
+                            canvas_hexagons.get_cell_center_y(row, col),
+                            canvas_hexagons.get_cell_size() - 0.5, &c, g);
+                    }
+                }
+            }
+            
+        });
+        if auto && time > speed {
+            canvas_hexagons.next_generation();
+            time = 0;
+        }
+    }
+}
+
+pub fn canvas_square_display_windows_file(file_name: &str) {
+    // Create a canvas
+    let mut canvas_squares = CanvasSquare::new_f(&file_name);
+
+    // Prepare window settings
+    let mut window_settings = WindowSettings::new("Rust Game of Life - square",
+        [(((canvas_squares.get_col_num() as f64) * canvas_squares.get_cell_size() + 10.0) as u32), 
+        (((canvas_squares.get_row_num() as f64) * canvas_squares.get_cell_size() + 10.0) as u32)])
+        .exit_on_esc(true);
+
+    // Fix vsync extension error for linux
+    window_settings.set_vsync(true); 
+
+    // Create a window
+    let mut window: PistonWindow = window_settings.build().unwrap();
+
+    // init
+    let mut auto = false;
+    let mut cursor = [0.0, 0.0];
+    let mut time = 0;
+    let mut speed = SPEED_INIT;
+
+    // Event loop
+    while let Some(event) = window.next() {
+        time += 1;
+
+        // Catch the events of the keyboard
+        if let Some(Button::Keyboard(key)) = event.press_args() {
+            // check for auto play
+            if key == Key::Space {
+                if auto {
+                    auto = false;
+                } else {
+                    auto = true;
+                }
+            }
+            // if enter -> next loop
+            if key == Key::Return {
+                canvas_squares.next_generation();
+            }
+            // increase the speed of auto play
+            if key == Key::Up {
+                if speed >= 0 {
+                    speed -= 20;
+                }
+            }
+            // decrease the speed of auto play
+            if key == Key::Down {
+                if speed < 600 {
+                    speed += 20;
+                }
+            }
+            // create some random alive cells
+            if key == Key::R {
+                for row in 0..canvas_squares.get_row_num() {
+                    for col in 0..canvas_squares.get_col_num() {
+                        canvas_squares.set_state(row, col, rand::random::<bool>());
+                    }
+                }
+            }
+        };
+        // check mouse click
+        let mut change = false;
+        if let Some(Button::Mouse(button)) = event.press_args() {
+            if button == MouseButton::Left {
+                change = true;
+            }
+        }
+        // get mouse position
+        event.mouse_cursor(|pos| {
+            cursor = pos;
+        });
+        // check if user have a mouse click -> change current cell state
+        if change {
+            canvas_squares.change_state(cursor[0], cursor[1]);
+        }
+
+        let mut canvas = canvas_squares.get_canvas();
+        // Draw all of them
+        window.draw_2d(&event, |c, g, _| {
+            clear(GRAY_COLOR, g);
+            for row in 0..canvas_squares.get_row_num() {
+                for col in 0..canvas_squares.get_col_num() {
+                    if canvas[row][col].is_alive() {
+                        draw_rectange(WHITE_COLOR, 
+                            col as f64 * canvas_squares.get_cell_size(), // start_x
+                            row as f64 * canvas_squares.get_cell_size(), // start_y
+                            canvas_squares.get_cell_size() - 1.0, 
+                            &c, 
+                            g);
+                    }
+                    else {
+                        draw_rectange(BLACK_COLOR, 
+                            col as f64 * canvas_squares.get_cell_size(), // start_x
+                            row as f64 * canvas_squares.get_cell_size(), // start_y
+                            canvas_squares.get_cell_size() - 1.0, 
+                            &c, 
+                            g);
+                    }
+                }
+            }
+        });
+        if auto && time > speed {
+            canvas_squares.next_generation();
+            time = 0;
+        }
+    }
+}

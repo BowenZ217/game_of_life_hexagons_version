@@ -1,4 +1,7 @@
 use crate::cell::Cell;
+use std::fs::File;
+use std::io::BufReader;
+use std::io::BufRead;
 
 #[derive(Debug, Default)]
 pub struct CanvasHex {
@@ -17,6 +20,47 @@ impl CanvasHex {
         // create 2d vector for cells, also set up the position
         let display_vector: Vec<Vec<Cell>> = CanvasHex::get_set_position(cells_vertical, cells_horizontal, side_length);
         
+        return CanvasHex {
+            height: ((3.0 as f64).sqrt() / 2.0) * (cells_vertical as f64) * side_length + side_length,
+            width: (cells_horizontal as f64) * side_length * 3.0 + 0.5 * side_length,
+            cells_vertical: cells_vertical,
+            cells_horizontal: cells_horizontal,
+            cell_side_length: side_length,
+            display: display_vector
+        };
+    }
+    pub fn new_f(file_name: &str) -> CanvasHex {
+        // uses a reader buffer
+        let file = File::open(file_name).expect("file not found!");
+        let reader = BufReader::new(file);
+
+        // init
+        let mut cells_vertical: usize = 0;
+        let mut cells_horizontal: usize = 0;
+        let mut side_length: f64 = 0.0;
+        let mut display_vector: Vec<Vec<Cell>> = vec![vec![Cell::new(); 0]; 0];
+        let mut row: usize = 0;
+
+        for line in reader.lines() {
+            let data_line = &line.unwrap();
+            let data: Vec<&str> = data_line.split_whitespace().collect();
+            if cells_vertical == 0 && cells_horizontal == 0 && side_length == 0.0 {
+                cells_horizontal = data[0].trim().parse::<usize>().expect("Failed to parse number col");
+                cells_vertical = data[1].trim().parse::<usize>().expect("Failed to parse number row");
+                if cells_vertical % 2 != 0 {
+                    cells_vertical += 1;
+                }
+                side_length = data[2].trim().parse::<f64>().expect("Failed to parse number size");
+                display_vector = CanvasHex::get_set_position(cells_vertical, cells_horizontal, side_length);
+                continue;
+            }
+            for col in 0..cells_horizontal {
+                if data[col] == "O" {
+                    display_vector[row][col].reverse_status();
+                }
+            }
+            row += 1;
+        }
         return CanvasHex {
             height: ((3.0 as f64).sqrt() / 2.0) * (cells_vertical as f64) * side_length + side_length,
             width: (cells_horizontal as f64) * side_length * 3.0 + 0.5 * side_length,
@@ -210,6 +254,15 @@ impl CanvasHex {
     pub fn is_alive(&mut self, row: usize, col: usize) -> bool {
         return self.display[row][col].is_alive();
     }
+    pub fn get_row_num(&mut self) -> usize {
+        self.cells_vertical
+    }
+    pub fn get_col_num(&mut self) -> usize {
+        self.cells_horizontal
+    }
+    pub fn get_cell_size(&mut self) -> f64 {
+        self.cell_side_length
+    }
 
     // seter
     //  let user change the cell's status in canvas
@@ -241,6 +294,44 @@ impl CanvasSquare {
             display: display_vector
         };
     }
+    
+    pub fn new_f(file_name: &str) -> CanvasSquare {
+        // uses a reader buffer
+        let file = File::open(file_name).expect("file not found!");
+        let reader = BufReader::new(file);
+
+        // init
+        let mut col_num_set: usize = 0;
+        let mut row_num_set: usize = 0;
+        let mut side_length: f64 = 0.0;
+        let mut display_vector: Vec<Vec<Cell>> = vec![vec![Cell::new(); 0]; 0];
+        let mut row: usize = 0;
+
+        for line in reader.lines() {
+            let data_line = &line.unwrap();
+            let data: Vec<&str> = data_line.split_whitespace().collect();
+            if row_num_set == 0 && col_num_set == 0 && side_length == 0.0 {
+                col_num_set = data[0].trim().parse::<usize>().expect("Failed to parse number col");
+                row_num_set = data[1].trim().parse::<usize>().expect("Failed to parse number row");
+                side_length = data[2].trim().parse::<f64>().expect("Failed to parse number size");
+                display_vector = vec![vec![Cell::new(); col_num_set]; row_num_set];
+                continue;
+            }
+            for col in 0..col_num_set {
+                if data[col] == "O" {
+                    display_vector[row][col].reverse_status();
+                }
+            }
+            row += 1;
+        }
+        return CanvasSquare {
+            row_num: row_num_set,
+            col_num: col_num_set,
+            cell_side_length: side_length,
+            display: display_vector
+        };
+    }
+
     pub fn next_generation(&mut self) {
         let mut next = self.display.clone();
         for row in 0..self.row_num {
@@ -331,6 +422,15 @@ impl CanvasSquare {
     // geter
     pub fn get_canvas(&mut self) -> Vec<Vec<Cell>> {
         return self.display.clone(); 
+    }
+    pub fn get_row_num(&mut self) -> usize {
+        self.row_num
+    }
+    pub fn get_col_num(&mut self) -> usize {
+        self.col_num
+    }
+    pub fn get_cell_size(&mut self) -> f64 {
+        self.cell_side_length
     }
 }
 

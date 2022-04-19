@@ -1,0 +1,6 @@
+5 5 20
+X X O X X
+X O X O X
+O X O X O
+X O X O X
+X X O X X
