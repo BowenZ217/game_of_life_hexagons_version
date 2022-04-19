@@ -2,6 +2,7 @@ use crate::cell::Cell;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
+use std::io::Write;
 
 #[derive(Debug, Default)]
 pub struct CanvasHex {
@@ -69,6 +70,25 @@ impl CanvasHex {
             cell_side_length: side_length,
             display: display_vector
         };
+    }
+    
+    pub fn save_file(&mut self, file_name: &str) {
+        let mut data: String = self.cells_horizontal.to_string() + " " + 
+                               &self.cells_vertical.to_string() + " " + 
+                               &self.cell_side_length.to_string() + "\n";
+        for row in 0..self.cells_vertical {
+            for col in 0..self.cells_horizontal {
+                if self.display[row][col].is_alive() {
+                    data += "O ";
+                }
+                else {
+                    data += "X ";
+                }
+            }
+            data += "\n";
+        }
+        let mut f = File::create(file_name).expect("Unable to create file");
+        f.write_all(data.as_bytes()).expect("Unable to write data");
     }
 
     fn get_set_position(cells_vertical: usize, cells_horizontal: usize, cell_side_length: f64) -> Vec<Vec<Cell>> {
@@ -330,6 +350,25 @@ impl CanvasSquare {
             cell_side_length: side_length,
             display: display_vector
         };
+    }
+
+    pub fn save_file(&mut self, file_name: &str) {
+        let mut data: String = self.col_num.to_string() + " " + 
+                               &self.row_num.to_string() + " " + 
+                               &self.cell_side_length.to_string() + "\n";
+        for row in 0..self.row_num {
+            for col in 0..self.col_num {
+                if self.display[row][col].is_alive() {
+                    data += "O ";
+                }
+                else {
+                    data += "X ";
+                }
+            }
+            data += "\n";
+        }
+        let mut f = File::create(file_name).expect("Unable to create file");
+        f.write_all(data.as_bytes()).expect("Unable to write data");
     }
 
     pub fn next_generation(&mut self) {

@@ -14,7 +14,11 @@ const BLACK_COLOR: Color = [0.0, 0.0, 0.0, 1.0];
 const GRAY_COLOR: Color = [0.5, 0.5, 0.5, 1.0];
 // alive cell color
 const WHITE_COLOR: Color = [1.0, 1.0, 1.0, 1.0];
+
+// auto speed setup
 const SPEED_INIT: i32 = 300;
+const SPEED_MAX: i32 = 600;
+const SPEED_CHANGE_PER_TIME: i32 = 20;
 
 pub fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: i32) {
     // Prepare window settings
@@ -58,13 +62,13 @@ pub fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: 
             // increase the speed of auto play
             if key == Key::Up {
                 if speed >= 0 {
-                    speed -= 20;
+                    speed -= SPEED_CHANGE_PER_TIME;
                 }
             }
             // decrease the speed of auto play
             if key == Key::Down {
-                if speed < 600 {
-                    speed += 20;
+                if speed < SPEED_MAX {
+                    speed += SPEED_CHANGE_PER_TIME;
                 }
             }
             // create some random alive cells
@@ -74,6 +78,10 @@ pub fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: 
                         canvas_squares.set_state(row, col, rand::random::<bool>());
                     }
                 }
+            }
+            // save current
+            if key == Key::S {
+                canvas_squares.save_file("save.txt");
             }
         };
         // check mouse click
@@ -166,13 +174,13 @@ pub fn canvas_hexagon_display_windows(row_num: usize, col_num: usize, cell_size:
             // increase the speed of auto play
             if key == Key::Up {
                 if speed >= 0 {
-                    speed -= 20;
+                    speed -= SPEED_CHANGE_PER_TIME;
                 }
             }
             // decrease the speed of auto play
             if key == Key::Down {
-                if speed < 600 {
-                    speed += 20;
+                if speed < SPEED_MAX {
+                    speed += SPEED_CHANGE_PER_TIME;
                 }
             }
             // create some random alive cells
@@ -182,6 +190,10 @@ pub fn canvas_hexagon_display_windows(row_num: usize, col_num: usize, cell_size:
                         canvas_hexagons.set_state(row, col, rand::random::<bool>());
                     }
                 }
+            }
+            // save current
+            if key == Key::S {
+                canvas_hexagons.save_file("save.txt");
             }
         };
         // check mouse click
@@ -279,13 +291,13 @@ pub fn canvas_hexagon_display_windows_file(file_name: &str) {
             // increase the speed of auto play
             if key == Key::Up {
                 if speed >= 0 {
-                    speed -= 20;
+                    speed -= SPEED_CHANGE_PER_TIME;
                 }
             }
             // decrease the speed of auto play
             if key == Key::Down {
-                if speed < 600 {
-                    speed += 20;
+                if speed < SPEED_MAX {
+                    speed += SPEED_CHANGE_PER_TIME;
                 }
             }
             // create some random alive cells
@@ -295,6 +307,10 @@ pub fn canvas_hexagon_display_windows_file(file_name: &str) {
                         canvas_hexagons.set_state(row, col, rand::random::<bool>());
                     }
                 }
+            }
+            // save current
+            if key == Key::S {
+                canvas_hexagons.save_file("save.txt");
             }
         };
         // check mouse click
@@ -394,13 +410,13 @@ pub fn canvas_square_display_windows_file(file_name: &str) {
             // increase the speed of auto play
             if key == Key::Up {
                 if speed >= 0 {
-                    speed -= 20;
+                    speed -= SPEED_CHANGE_PER_TIME;
                 }
             }
             // decrease the speed of auto play
             if key == Key::Down {
-                if speed < 600 {
-                    speed += 20;
+                if speed < SPEED_MAX {
+                    speed += SPEED_CHANGE_PER_TIME;
                 }
             }
             // create some random alive cells
@@ -410,6 +426,10 @@ pub fn canvas_square_display_windows_file(file_name: &str) {
                         canvas_squares.set_state(row, col, rand::random::<bool>());
                     }
                 }
+            }
+            // save current
+            if key == Key::S {
+                canvas_squares.save_file("save.txt");
             }
         };
         // check mouse click
