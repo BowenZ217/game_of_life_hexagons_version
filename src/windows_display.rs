@@ -16,9 +16,9 @@ const GRAY_COLOR: Color = [0.5, 0.5, 0.5, 1.0];
 const WHITE_COLOR: Color = [1.0, 1.0, 1.0, 1.0];
 
 // auto speed setup
-const SPEED_INIT: i32 = 300;
-const SPEED_MAX: i32 = 600;
-const SPEED_CHANGE_PER_TIME: i32 = 20;
+const SPEED_INIT: i32 = 40;
+const SPEED_MAX: i32 = 100;
+const SPEED_CHANGE_PER_TIME: i32 = 5;
 
 pub fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: i32) {
     // Prepare window settings
