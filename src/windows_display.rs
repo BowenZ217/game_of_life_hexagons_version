@@ -8,12 +8,12 @@ use crate::draw::{draw_rectange, draw_hexagon};
 extern crate rand;
 extern crate piston_window;
 
-// dead cell color
-const BLACK_COLOR: Color = [0.0, 0.0, 0.0, 1.0];
-// background color
-const GRAY_COLOR: Color = [0.5, 0.5, 0.5, 1.0];
-// alive cell color
-const WHITE_COLOR: Color = [1.0, 1.0, 1.0, 1.0];
+// color: gray
+const BACKGROUND_COLOR: Color = [0.5, 0.5, 0.5, 1.0];
+// color: black
+const DEAD_CELL_COLOR: Color = [0.0, 0.0, 0.0, 1.0];
+// color: white // "change same name -> more meaningful
+const ALIVE_CELL_COLOR: Color = [1.0, 1.0, 1.0, 1.0];
 
 // auto speed setup
 const SPEED_INIT: i32 = 40;
@@ -49,11 +49,7 @@ pub fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: 
         if let Some(Button::Keyboard(key)) = event.press_args() {
             // check for auto play
             if key == Key::Space {
-                if auto {
-                    auto = false;
-                } else {
-                    auto = true;
-                }
+                auto = !auto;
             }
             // if enter -> next loop
             if key == Key::Return {
@@ -103,11 +99,11 @@ pub fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: 
         let mut canvas = canvas_squares.get_canvas();
         // Draw all of them
         window.draw_2d(&event, |c, g, _| {
-            clear(GRAY_COLOR, g);
+            clear(BACKGROUND_COLOR, g);
             for row in 0..row_num {
                 for col in 0..col_num {
                     if canvas[row][col].is_alive() {
-                        draw_rectange(WHITE_COLOR, 
+                        draw_rectange(ALIVE_CELL_COLOR, 
                             (col as i32 * cell_size) as f64, // start_x
                             (row as i32 * cell_size) as f64, // start_y
                             cell_size as f64 - 1.0, 
@@ -115,7 +111,7 @@ pub fn canvas_square_display_windows(row_num: usize, col_num: usize, cell_size: 
                             g);
                     }
                     else {
-                        draw_rectange(BLACK_COLOR, 
+                        draw_rectange(DEAD_CELL_COLOR, 
                             (col as i32 * cell_size) as f64, // start_x
                             (row as i32 * cell_size) as f64, // start_y
                             cell_size as f64 - 1.0, 
@@ -161,11 +157,7 @@ pub fn canvas_hexagon_display_windows(row_num: usize, col_num: usize, cell_size:
         if let Some(Button::Keyboard(key)) = event.press_args() {
             // check for auto play
             if key == Key::Space {
-                if auto {
-                    auto = false;
-                } else {
-                    auto = true;
-                }
+                auto = !auto;
             }
             // if enter -> next loop
             if key == Key::Return {
@@ -215,26 +207,26 @@ pub fn canvas_hexagon_display_windows(row_num: usize, col_num: usize, cell_size:
         // let mut canvas = canvas_hexagons.get_canvas();
         // Draw all of them
         window.draw_2d(&event, |c, g, _| {
-            clear(GRAY_COLOR, g);
+            clear(BACKGROUND_COLOR, g);
             for row in 0..2*row_num {
                 for col in 0..col_num {
                     if canvas_hexagons.is_alive(row, col) {
                         // for testing the center
-                        // draw_rectange(WHITE_COLOR, 
+                        // draw_rectange(ALIVE_CELL_COLOR, 
                         //     canvas_hexagons.get_cell_center_x(row, col), // start_x
                         //     canvas_hexagons.get_cell_center_y(row, col), // start_y
                         //     (cell_size * 2 / 3) as f64, 
                         //     &c, 
                         //     g);
                         draw_hexagon(
-                            WHITE_COLOR,
+                            ALIVE_CELL_COLOR,
                             canvas_hexagons.get_cell_center_x(row, col),
                             canvas_hexagons.get_cell_center_y(row, col),
                             cell_size as f64 - 0.5, &c, g);
                     }
                     else {
                         draw_hexagon(
-                            BLACK_COLOR,
+                            DEAD_CELL_COLOR,
                             canvas_hexagons.get_cell_center_x(row, col),
                             canvas_hexagons.get_cell_center_y(row, col),
                             cell_size as f64 - 0.5, &c, g);
@@ -278,11 +270,7 @@ pub fn canvas_hexagon_display_windows_file(file_name: &str) {
         if let Some(Button::Keyboard(key)) = event.press_args() {
             // check for auto play
             if key == Key::Space {
-                if auto {
-                    auto = false;
-                } else {
-                    auto = true;
-                }
+                auto = !auto;
             }
             // if enter -> next loop
             if key == Key::Return {
@@ -332,26 +320,26 @@ pub fn canvas_hexagon_display_windows_file(file_name: &str) {
         // let mut canvas = canvas_hexagons.get_canvas();
         // Draw all of them
         window.draw_2d(&event, |c, g, _| {
-            clear(GRAY_COLOR, g);
+            clear(BACKGROUND_COLOR, g);
             for row in 0..canvas_hexagons.get_row_num() {
                 for col in 0..canvas_hexagons.get_col_num() {
                     if canvas_hexagons.is_alive(row, col) {
                         // for testing the center
-                        // draw_rectange(WHITE_COLOR, 
+                        // draw_rectange(ALIVE_CELL_COLOR, 
                         //     canvas_hexagons.get_cell_center_x(row, col), // start_x
                         //     canvas_hexagons.get_cell_center_y(row, col), // start_y
                         //     (cell_size * 2 / 3) as f64, 
                         //     &c, 
                         //     g);
                         draw_hexagon(
-                            WHITE_COLOR,
+                            ALIVE_CELL_COLOR,
                             canvas_hexagons.get_cell_center_x(row, col),
                             canvas_hexagons.get_cell_center_y(row, col),
                             canvas_hexagons.get_cell_size() - 0.5, &c, g);
                     }
                     else {
                         draw_hexagon(
-                            BLACK_COLOR,
+                            DEAD_CELL_COLOR,
                             canvas_hexagons.get_cell_center_x(row, col),
                             canvas_hexagons.get_cell_center_y(row, col),
                             canvas_hexagons.get_cell_size() - 0.5, &c, g);
@@ -397,11 +385,7 @@ pub fn canvas_square_display_windows_file(file_name: &str) {
         if let Some(Button::Keyboard(key)) = event.press_args() {
             // check for auto play
             if key == Key::Space {
-                if auto {
-                    auto = false;
-                } else {
-                    auto = true;
-                }
+                auto = !auto;
             }
             // if enter -> next loop
             if key == Key::Return {
@@ -451,11 +435,11 @@ pub fn canvas_square_display_windows_file(file_name: &str) {
         let mut canvas = canvas_squares.get_canvas();
         // Draw all of them
         window.draw_2d(&event, |c, g, _| {
-            clear(GRAY_COLOR, g);
+            clear(BACKGROUND_COLOR, g);
             for row in 0..canvas_squares.get_row_num() {
                 for col in 0..canvas_squares.get_col_num() {
                     if canvas[row][col].is_alive() {
-                        draw_rectange(WHITE_COLOR, 
+                        draw_rectange(ALIVE_CELL_COLOR, 
                             col as f64 * canvas_squares.get_cell_size(), // start_x
                             row as f64 * canvas_squares.get_cell_size(), // start_y
                             canvas_squares.get_cell_size() - 1.0, 
@@ -463,7 +447,7 @@ pub fn canvas_square_display_windows_file(file_name: &str) {
                             g);
                     }
                     else {
-                        draw_rectange(BLACK_COLOR, 
+                        draw_rectange(DEAD_CELL_COLOR, 
                             col as f64 * canvas_squares.get_cell_size(), // start_x
                             row as f64 * canvas_squares.get_cell_size(), // start_y
                             canvas_squares.get_cell_size() - 1.0, 
