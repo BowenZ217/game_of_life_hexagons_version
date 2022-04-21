@@ -4,6 +4,8 @@ use std::io::BufReader;
 use std::io::BufRead;
 use std::io::Write;
 
+use crate::lib::{rem_first_and_last};
+
 #[derive(Debug, Default)]
 pub struct CanvasHex {
     height: f64,
@@ -32,7 +34,11 @@ impl CanvasHex {
     }
     pub fn new_f(file_name: &str) -> CanvasHex {
         // uses a reader buffer
-        let file = File::open(file_name).expect("file not found!");
+        let mut file_name_temp = file_name;
+        if file_name.chars().nth(0).unwrap() == '\'' {
+            file_name_temp = rem_first_and_last(file_name);
+        }
+        let file = File::open(file_name_temp).expect("file not found!");
         let reader = BufReader::new(file);
 
         // init
@@ -317,7 +323,11 @@ impl CanvasSquare {
     
     pub fn new_f(file_name: &str) -> CanvasSquare {
         // uses a reader buffer
-        let file = File::open(file_name).expect("file not found!");
+        let mut file_name_temp = file_name;
+        if file_name.chars().nth(0).unwrap() == '\'' {
+            file_name_temp = rem_first_and_last(file_name);
+        }
+        let file = File::open(file_name_temp).expect("file not found!");
         let reader = BufReader::new(file);
 
         // init
