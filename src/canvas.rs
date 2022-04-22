@@ -35,6 +35,7 @@ impl CanvasHex {
     pub fn new_f(file_name: &str) -> CanvasHex {
         // uses a reader buffer
         let mut file_name_temp = file_name;
+        // check if file name start & end with: ' , such as Mac
         if file_name.chars().nth(0).unwrap() == '\'' {
             file_name_temp = rem_first_and_last(file_name);
         }
@@ -48,9 +49,17 @@ impl CanvasHex {
         let mut display_vector: Vec<Vec<Cell>> = vec![vec![Cell::new(); 0]; 0];
         let mut row: usize = 0;
 
+        // file structure:
+        // X means dead cell, O means alive cell
+        // col_number row_number cell_size
+        // [0][0] [0][1] [0][2]
+        // [1][0] [1][1] [1][2]
+        // [2][0] [2][1] [2][2]
+
         for line in reader.lines() {
             let data_line = &line.unwrap();
             let data: Vec<&str> = data_line.split_whitespace().collect();
+            // use first line init base case
             if cells_vertical == 0 && cells_horizontal == 0 && side_length == 0.0 {
                 cells_horizontal = data[0].trim().parse::<usize>().expect("Failed to parse number col");
                 cells_vertical = data[1].trim().parse::<usize>().expect("Failed to parse number row");
@@ -60,7 +69,9 @@ impl CanvasHex {
                 side_length = data[2].trim().parse::<f64>().expect("Failed to parse number size");
                 display_vector = CanvasHex::get_set_position(cells_vertical, cells_horizontal, side_length);
                 continue;
+                // finished base case
             }
+            // after first line: init each cell state
             for col in 0..cells_horizontal {
                 if data[col] == "O" {
                     display_vector[row][col].reverse_status();
@@ -228,16 +239,36 @@ impl CanvasHex {
     }
 
     // use user mouse position (when clicked) to check state
+    // version 2:
+    //  not work when the mouse position is at triangle part for each hexagon ———— slanting lines
     pub fn change_state(&mut self, x: f64, y: f64) {
-        let size_of_each_cell_in_col = self.width / (self.cells_horizontal * 2) as f64;
-        let temp = x / size_of_each_cell_in_col;
-        let col = temp as usize / 2;
-        if temp % 2.0 == 0.0 {
-            let row = (y / ((3.0 as f64).sqrt() * self.cell_side_length) * 2.0) as usize;
+        let temp = (x - (self.cell_side_length / 2.0)) / (self.cell_side_length / 2.0);
+        // devided to six parts
+        //  part:   x 0 1 2 3 4 5
+        //                 _____
+        //           _____/     \
+        //          /     \_____/
+        //          \_____/
+        // 0 && 1 means odd rows
+        // 3 && 4 means even rows
+        let region = temp as usize % 6;
+        let col = temp as usize / 6;
+        if region == 0 || region == 1 {
+            // start from 0 + (√3 / 2) * cell_side_length 
+            let mut row = ( (y - (((3.0 as f64).sqrt() * self.cell_side_length) / 2.0) ) * 2.0 / ((3.0 as f64).sqrt() * self.cell_side_length) ) as usize;
+            // make sure row number is odd
+            if row % 2 == 0 {
+                row += 1;
+            }
             self.display[row][col].reverse_status();
         }
-        else {
-            let row = (((y - ((3.0 as f64).sqrt() / 2.0) * self.cell_side_length)) * 2.0 / ((3.0 as f64).sqrt() * self.cell_side_length)) as usize;
+        if region == 3 || region == 4 {
+            // start from 0
+            let mut row = ( y  / ((3.0 as f64).sqrt() * self.cell_side_length)  * 2.0) as usize;
+            // make sure row number is even
+            if row % 2 != 0 {
+                row -= 1;
+            }
             self.display[row][col].reverse_status();
         }
     }
@@ -324,6 +355,7 @@ impl CanvasSquare {
     pub fn new_f(file_name: &str) -> CanvasSquare {
         // uses a reader buffer
         let mut file_name_temp = file_name;
+        // check if file name start & end with: ' , such as Mac
         if file_name.chars().nth(0).unwrap() == '\'' {
             file_name_temp = rem_first_and_last(file_name);
         }
@@ -337,16 +369,26 @@ impl CanvasSquare {
         let mut display_vector: Vec<Vec<Cell>> = vec![vec![Cell::new(); 0]; 0];
         let mut row: usize = 0;
 
+        // file structure:
+        // X means dead cell, O means alive cell
+        // col_number row_number cell_size
+        // [0][0] [0][1] [0][2]
+        // [1][0] [1][1] [1][2]
+        // [2][0] [2][1] [2][2]
+
         for line in reader.lines() {
             let data_line = &line.unwrap();
             let data: Vec<&str> = data_line.split_whitespace().collect();
+            // use first line init base case
             if row_num_set == 0 && col_num_set == 0 && side_length == 0.0 {
                 col_num_set = data[0].trim().parse::<usize>().expect("Failed to parse number col");
                 row_num_set = data[1].trim().parse::<usize>().expect("Failed to parse number row");
                 side_length = data[2].trim().parse::<f64>().expect("Failed to parse number size");
                 display_vector = vec![vec![Cell::new(); col_num_set]; row_num_set];
                 continue;
+                // finish base case
             }
+            // after first line: init cell state
             for col in 0..col_num_set {
                 if data[col] == "O" {
                     display_vector[row][col].reverse_status();

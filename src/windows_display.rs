@@ -12,7 +12,7 @@ extern crate piston_window;
 const BACKGROUND_COLOR: Color = [0.5, 0.5, 0.5, 1.0];
 // color: black
 const DEAD_CELL_COLOR: Color = [0.0, 0.0, 0.0, 1.0];
-// color: white // "change same name -> more meaningful
+// color: white
 const ALIVE_CELL_COLOR: Color = [1.0, 1.0, 1.0, 1.0];
 
 // auto speed setup
