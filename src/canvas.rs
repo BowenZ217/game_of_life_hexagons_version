@@ -147,7 +147,7 @@ impl CanvasHex {
 
     // means cells_vertical % 2 == 0
     // get number of alive neighbors of that cell
-    fn alive_nei_num_even(&mut self, row: usize, col: usize) -> i32 {
+    fn alive_nei_num(&mut self, row: usize, col: usize) -> i32 {
         let mut count = 0;
         // odd rows
         if row % 2 == 0 {
@@ -177,7 +177,7 @@ impl CanvasHex {
                 count += 1;
             }
         }
-        // even rows
+        // odd rows
         else {
             if row > 1 && self.display[row - 2][col].is_alive() {
                 count += 1;
@@ -209,13 +209,10 @@ impl CanvasHex {
         //  true    means   alive
         //  false   means   dead
         // check how many alive neighbor cells
-        let neighbor_num = CanvasHex::alive_nei_num_even(self, row, col);
+        let neighbor_num = CanvasHex::alive_nei_num(self, row, col);
         if self.display[row][col].is_alive() {
             // 
-            if neighbor_num == 3 {
-                return true;
-            }
-            if neighbor_num == 5 {
+            if neighbor_num == 3 || neighbor_num == 4{
                 return true;
             }
         }
