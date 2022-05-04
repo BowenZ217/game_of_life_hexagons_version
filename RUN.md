@@ -19,7 +19,6 @@ When prompted with
         1) Use default 
         2) Use file settings 
         3) Customize
-
 type '1' + enter: choose blank canvas to start
 type '2' + enter: choose customfile setting from file_example folder
 type '3' + enter: choose custom rows, custom colums, and custom cell size
