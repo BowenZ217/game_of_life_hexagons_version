@@ -241,11 +241,13 @@ impl CanvasHex {
     pub fn change_state(&mut self, x: f64, y: f64) {
         let temp = (x - (self.cell_side_length / 2.0)) / (self.cell_side_length / 2.0);
         // devided to six parts
-        //  part:   x 0 1 2 3 4 5
-        //                 _____
-        //           _____/     \
-        //          /     \_____/
-        //          \_____/
+        //  part:   x 0 1 2 3 4 5 0 1 2 3 4 5
+        //                 _____       _____
+        //           _____/ 0,0 \_____/ 0,1 \
+        //          / 1,0 \_____/ 1,1 \_____/
+        //          \_____/ 2,0 \_____/ 2,1 \
+        //          / 3,0 \_____/ 3,1 \_____/
+        //          \_____/     \_____/
         // 0 && 1 means odd rows
         // 3 && 4 means even rows
         let region = temp as usize % 6;
