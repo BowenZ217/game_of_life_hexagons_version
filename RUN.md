@@ -19,29 +19,28 @@ When prompted with
         1) Use default 
         2) Use file settings 
         3) Customize
-type '1' + enter: choose blank canvas to start
-type '2' + enter: choose customfile setting from file_example folder
-type '3' + enter: choose custom rows, custom colums, and custom cell size
 
-If choosing 
-    '2) Use file settings'
+    type '1' + enter: choose blank canvas to start
+    type '2' + enter: choose customfile setting from file_example folder
+    type '3' + enter: choose custom rows, custom colums, and custom cell size
 
-drag custom file from ./file_example/_____.txt to terminal and drop
-press enter
+If choosing '2) Use file settings'
 
-If choosing 
-    '3) Customize'
+    drag custom file from ./file_example/_____.txt to terminal and drop
+    press enter
 
-enter desired number of rows when prompted
-enter desired number of columns when prompted
-enter desired size of cell when prompted
+If choosing '3) Customize'
+
+    enter desired number of rows when prompted
+    enter desired number of columns when prompted
+    enter desired size of cell when prompted
 
 Special key inputs while canvas is running:
 
-enter: next generation  
-space: automatically play / stop   
-mouse click(left): make the current mouse position of the cell switch state (dead->alive / alive -> dead)
-up arrow: speed up iterations through generations
-down arrow: slow down iterations through generations
-s: save canvas status
-r: run random cells
+    enter: next generation  
+    space: automatically play / stop   
+    mouse click(left): make the current mouse position of the cell switch state (dead->alive / alive -> dead)
+    up arrow: speed up iterations through generations
+    down arrow: slow down iterations through generations
+    s: save canvas status
+    r: run random cells
