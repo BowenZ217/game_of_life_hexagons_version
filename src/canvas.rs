@@ -240,7 +240,7 @@ impl CanvasHex {
     //  not work when the mouse position is at triangle part for each hexagon ———— slanting lines
     pub fn change_state(&mut self, x: f64, y: f64) {
         let temp = (x - (self.cell_side_length / 2.0)) / (self.cell_side_length / 2.0);
-        // devided to six parts
+        // divided to six parts
         //  part:   x 0 1 2 3 4 5
         //                 _____
         //           _____/     \
