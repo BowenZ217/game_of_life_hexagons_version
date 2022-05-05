@@ -1,7 +1,7 @@
 ### start:  
-git clone https://github.com/PeterZ217/game_of_life_hexagons_version.git
+        git clone https://github.com/PeterZ217/game_of_life_hexagons_version.git
 
-cargo run  
+        cargo run  
 
 ### After start:  
 When prompted with 
