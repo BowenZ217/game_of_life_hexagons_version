@@ -1,7 +1,16 @@
-### start:  
+### start: 
+Clone repository:
+
         git clone https://github.com/PeterZ217/game_of_life_hexagons_version.git
 
+Enter the directory:
+
+        cd game_of_life_hexagons_version
+
+Run the program:
+
         cargo run  
+        
 
 ### After start:  
 When prompted with 
